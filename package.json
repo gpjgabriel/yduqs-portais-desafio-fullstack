@@ -1,0 +1,24 @@
+{
+  "name": "yduqs-portais-desafio-fullstack",
+  "version": "1.0.0",
+  "description": "Bem-vindo(a)! Este é o repositório base para o **Desafio Fullstack** da nossa etapa de seleção de novos colaboradores.",
+  "main": "index.js",
+  "workspaces": [
+    "back-end",
+    "front-end"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FelipeRosseti/yduqs-portais-desafio-fullstack.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FelipeRosseti/yduqs-portais-desafio-fullstack/issues"
+  },
+  "homepage": "https://github.com/FelipeRosseti/yduqs-portais-desafio-fullstack#readme"
+}

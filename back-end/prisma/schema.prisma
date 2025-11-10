@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modalidade do curso
+enum Modality {
+  PRESENCIAL
+  DIGITAL
+}
+
+  // Usuário (Aluno/cliente/lead)
+
+model Student {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String
+  cpf   String  @unique
+  birthDate DateTime
+  phone String?
+  highSchoolGraduationYear Int?
+
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Instituição/Faculdade
+
+model Campus {
+  id      Int    @id @default(autoincrement())
+  name    String // Ex: "VILA INDUSTRIAL"
+  city    String // Ex: "CAMPINAS"
+  address String // Ex: "AV. DAS AMÉRICAS..."
+
+  offers CourseOffer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Dados do Curso
+
+model Course {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  description String?
+
+  offers CourseOffer[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Planos
+
+model CourseOffer {
+  id        Int      @id @default(autoincrement())
+  modality  Modality // Presencial ou Digital
+  listPrice Decimal  // Preço
+
+  // Curso
+  courseId Int
+  course   Course @relation(fields: [courseId], references: [id])
+
+  // Faculdade/Instituição
+  campusId Int
+  campus   Campus @relation(fields: [campusId], references: [id])
+
+  // Planos
+  paymentPlans PaymentPlan[]
+
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Formas de Pagamento
+
+model PaymentPlan {
+  id               Int     @id @default(autoincrement())
+  description      String  // Ex: "18x R$ 169,95" (O que irá aparecer no front)
+  installments     Int     // Ex: 18
+  installmentValue Decimal // Ex: 169.95
+  total            Decimal // Ex: 3059.10
+  
+  offerId Int
+  offer   CourseOffer @relation(fields: [offerId], references: [id])
+  
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Matrícula (Aluno + Curso + Pagamento)
+
+model Enrollment {
+  id Int @id @default(autoincrement())
+
+  studentId Int
+  student   Student @relation(fields: [studentId], references: [id])
+
+  courseOfferId Int
+  offer         CourseOffer @relation(fields: [courseOfferId], references: [id])
+
+  paymentPlanId Int
+  paymentPlan   PaymentPlan @relation(fields: [paymentPlanId], references: [id])
+  
+  finalAmount Decimal 
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
