@@ -13,6 +13,7 @@ export type CourseOffer = {
   id: number;
   modality: "PRESENCIAL" | "DIGITAL";
   listPrice: string;
+  featuredFullPrice: string | null;
   course: Course;
   campus: Campus;
   paymentPlans: PaymentPlan[];
@@ -36,7 +37,6 @@ export const CourseOfferCard = ({
   onAvançarClick,
 }: CourseOfferCardProps) => {
   const mainPlan = offer.paymentPlans.find((p) => p.installments === 18);
-  const fullPricePlan = offer.paymentPlans.find((p) => p.installments === 1);
 
   const isDigitalCard = offer.modality === "DIGITAL";
 
@@ -96,7 +96,9 @@ export const CourseOfferCard = ({
               </div>
               <p className="mt-1 text-sm font-medium text-white/90">
                 à vista{" "}
-                {fullPricePlan ? formatCurrency(fullPricePlan.total) : "N/D"}
+                {offer.featuredFullPrice
+                  ? formatCurrency(offer.featuredFullPrice)
+                  : "N/D"}
               </p>
             </div>
             <div className="flex-1"></div>

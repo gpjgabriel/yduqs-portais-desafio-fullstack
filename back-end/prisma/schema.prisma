@@ -63,6 +63,7 @@ model CourseOffer {
   id        Int      @id @default(autoincrement())
   modality  Modality // Presencial ou Digital
   listPrice Decimal  // Preço
+  featuredFullPrice Decimal? //Preço à vista
 
   // Curso
   courseId Int

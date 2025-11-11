@@ -41,7 +41,8 @@ async function main() {
   const ofertaPresencial = await prisma.courseOffer.create({
     data: {
       modality: Modality.PRESENCIAL,
-      listPrice: 2613.6,
+      listPrice: 4752.0, // Preço
+      featuredFullPrice: 2613.6, // Preço à vista
       courseId: cursoAdmin.id,
       campusId: campusVilaIndustrial.id,
     },
@@ -50,7 +51,8 @@ async function main() {
   const ofertaDigital = await prisma.courseOffer.create({
     data: {
       modality: Modality.DIGITAL,
-      listPrice: 1500.0,
+      listPrice: 1500.0, //fake
+      featuredFullPrice: null,
       courseId: cursoAdmin.id,
       campusId: campusBarraDaTijuca.id,
     },
