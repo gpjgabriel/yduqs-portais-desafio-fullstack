@@ -4,7 +4,10 @@ import Link from "next/link";
 export const Header = () => {
   return (
     <header className="w-full bg-white shadow-md">
-      <div className="container mx-auto flex h-20 max-w-7xl items-center justify-between px-4">
+      <div
+        className="container mx-auto flex h-16 max-w-7xl 
+          items-center justify-between px-6 md:h-20 md:px-4"
+      >
         <Link href="/">
           <Image
             src="/logo-estacio-azul.svg"
