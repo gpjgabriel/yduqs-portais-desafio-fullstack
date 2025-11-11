@@ -1,12 +1,19 @@
 import React from "react";
 
-type Campus = { id: number; name: string; city: string; address: string };
-type Course = { id: number; name: string };
-type PaymentPlan = {
+export type Campus = {
+  id: number;
+  name: string;
+  city: string;
+  address: string;
+};
+export type Course = { id: number; name: string };
+
+export type PaymentPlan = {
   id: number;
   installments: number;
   installmentValue: string;
   total: string;
+  description: string;
 };
 
 export type CourseOffer = {

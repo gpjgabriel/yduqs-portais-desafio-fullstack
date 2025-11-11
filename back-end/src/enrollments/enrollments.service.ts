@@ -55,7 +55,7 @@ export class EnrollmentsService {
       });
     } catch (error) {
       if (
-        error instanceof Prisma.PrismaClientKnownRequestError && // Se o falhar por outra constraint única (ex: email)
+        error instanceof Prisma.PrismaClientKnownRequestError && // Se falhar por outra constraint única (ex: email)
         error.code === "P2002"
       ) {
         throw new ConflictException(

@@ -5,6 +5,8 @@ import {
   CourseOfferCard,
   type CourseOffer,
 } from './CourseOfferCard';
+import { OfferDetailsModal } from './offerDetailsModal';
+
 
 async function getCourseOffers(): Promise<CourseOffer[]> {
   try {
@@ -12,7 +14,7 @@ async function getCourseOffers(): Promise<CourseOffer[]> {
     if (!res.ok) throw new Error('Dados inexistentes!');
     return res.json();
   } catch (error) {
-    console.error('\Erro ao buscar dados:', error);
+    console.error('Erro ao buscar dados:', error);
     return [];
   }
 }
@@ -24,6 +26,7 @@ export const CourseOfferSection = () => {
 
   useEffect(() => {
     setIsLoading(true);
+
     getCourseOffers()
       .then((data) => {
         setOffers(data);
@@ -33,14 +36,11 @@ export const CourseOfferSection = () => {
       });
   }, []);
 
-  const handleAvançarClick = (offer: CourseOffer) => {
-    console.log('offer:', offer);
-    setSelectedOffer(offer);
-  };
+  const handleAvançarClick = (offer: CourseOffer) => setSelectedOffer(offer);
+  const handleCloseModal = () => setSelectedOffer(null);
 
   return (
     <section className="w-full flex-1 bg-gray-100">
-      
       <div className="container mx-auto max-w-7xl px-6 md:px-4 pt-8 pb-4">
         {isLoading ? (
           <p className="text-sm font-normal text-gray-700">Carregando...</p>
@@ -51,6 +51,7 @@ export const CourseOfferSection = () => {
         )}
       </div>
 
+      {/* >>>>>>>>>> Cards <<<<<<<<<<*/}
       <div className="container mx-auto max-w-7xl px-6 md:px-4 pt-0 pb-14">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {offers.map((offer) => (
@@ -68,6 +69,12 @@ export const CourseOfferSection = () => {
           </p>
         )}
       </div>
+
+      {/*>>>>>>>>>>>>> Sidebar <<<<<<<<<<<<*/}
+      <OfferDetailsModal
+        offer={selectedOffer}
+        onClose={handleCloseModal}
+      />
     </section>
   );
 };
