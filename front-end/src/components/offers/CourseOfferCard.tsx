@@ -62,11 +62,11 @@ export const CourseOfferCard = ({
         )}
       </div>
 
-      <div className="flex flex-1 flex-col bg-[#144BC8] p-6">
+      <div className={`flex flex-1 flex-col bg-[#144BC8] px-4 py-6 pb-4`}>
         {/* CARD DIGITAL */}
         {isDigitalCard ? (
           <div className="flex flex-1 flex-col gap-6">
-            <div className="flex items-start gap-2">
+            <div className="flex flex-col gap-2">
               <i
                 className="pi pi-info-circle text-white"
                 style={{ fontSize: "1.5rem" }}
@@ -92,7 +92,7 @@ export const CourseOfferCard = ({
                 <span className="align-text-bottom text-base font-medium text-white">
                   {mainPlan?.installments}x
                 </span>
-                <span className="mx-1 text-4xl font-semibold leading-none text-white md:text-5xl">
+                <span className="mx-2 text-4xl font-semibold leading-none text-white md:text-5xl">
                   {mainPlan
                     ? formatCurrency(mainPlan.installmentValue).replace(
                         "R$",
@@ -112,19 +112,17 @@ export const CourseOfferCard = ({
           </div>
         )}
 
-        <button
-          onClick={() => onAvançarClick(offer)}
-          className="
-            mt-6 flex h-12 w-full items-center justify-center rounded-lg 
-            bg-[#EE325D] px-6 font-medium text-white
-            transition-colors hover:bg-red-600
-          "
-        >
-          Avançar
-        </button>
+        <div className="py-6 pb-0">
+          <button
+            onClick={() => onAvançarClick(offer)}
+            className="flex h-12 w-full items-center justify-center rounded-lg bg-[#EE325D] px-6 font-medium text-white transition-colors hover:bg-red-600"
+          >
+            Avançar
+          </button>
+        </div>
       </div>
 
-      <div className="flex flex-col gap-1 rounded-b-lg bg-white p-6">
+      <div className={`flex flex-col gap-1 rounded-b-lg bg-white p-4`}>
         <p className="text-sm font-medium text-gray-900">
           {offer.campus.city} - {offer.campus.name}
         </p>

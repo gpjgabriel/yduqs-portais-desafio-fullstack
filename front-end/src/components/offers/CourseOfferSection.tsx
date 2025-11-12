@@ -7,8 +7,6 @@ import {
 } from './CourseOfferCard';
 import { OfferDetailsModal } from './OfferDetailsModal';
 
-
-
 async function getCourseOffers(): Promise<CourseOffer[]> {
   try {
     const res = await fetch('http://localhost:3000/course-offers');
@@ -42,7 +40,7 @@ export const CourseOfferSection = () => {
 
   return (
     <section className="w-full flex-1 bg-gray-100">
-      <div className="container mx-auto max-w-7xl px-6 md:px-4 pt-8 pb-4">
+      <div className="w-full px-6 md:px-22 pt-8 pb-4">
         {isLoading ? (
           <p className="text-sm font-normal text-gray-700">Carregando...</p>
         ) : (
@@ -53,7 +51,7 @@ export const CourseOfferSection = () => {
       </div>
 
       {/* >>>>>>>>>> Cards <<<<<<<<<<*/}
-      <div className="container mx-auto max-w-7xl px-6 md:px-4 pt-0 pb-14">
+      <div className="w-full px-6 md:px-22 pt-0 pb-14">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {offers.map((offer) => (
             <CourseOfferCard
