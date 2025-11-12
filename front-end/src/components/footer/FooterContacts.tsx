@@ -2,7 +2,7 @@
 
 export const FooterContacts = () => {
   return (
-    <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:gap-6">
+    <div className="flex flex-col items-start gap-4 md:flex-row md:items-center">
       <a
         href="https://wa.me/..."
         target="_blank"
