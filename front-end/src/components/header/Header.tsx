@@ -4,7 +4,7 @@ import Link from "next/link";
 export const Header = () => {
   return (
     <header className="w-full bg-white shadow-md">
-      <div className="flex h-16 items-center justify-between px-6 md:h-20 md:px-22 md:p-6">
+      <div className="flex items-center justify-between h-16 p-4 md:p-6 md:h-20 md:px-22">
         <Link href="/">
           <Image
             src="/logo-estacio-azul.svg"
