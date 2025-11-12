@@ -239,7 +239,7 @@ export const EnrollmentForm = () => {
         <button
           type="submit"
           disabled={!isValid || isLoading}
-          className="h-12 w-28 justify-center rounded-lg px-6 text-base font-medium text-white bg-[#EE325D] hover:bg-red-600 disabled:bg-gray-300 disabled:opacity-70 disabled:text-gray-700"
+          className="flex items-center justify-center h-12 w-28 rounded-lg px-6 py-4 text-base font-medium text-white bg-[#144BC8] hover:bg-blue-800 disabled:bg-gray-200 disabled:text-gray-900 disabled:opacity-70 cursor-pointer"
         >
           {isLoading ? "Enviando..." : "Avançar"}
         </button>

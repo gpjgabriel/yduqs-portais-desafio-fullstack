@@ -119,9 +119,12 @@ export const CheckboxInput = ({
           type="checkbox"
           id={name}
           {...register(name)}
-          className="mt-1 h-5 w-5 shrink-0 appearance-none rounded border border-gray-500 checked:bg-blue-600 checked:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="mt-1 h-5 w-5 shrink-0 appearance-none rounded border border-gray-500 checked:bg-blue-600 checked:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
         />
-        <label htmlFor={name} className="text-base font-medium text-gray-900">
+        <label
+          htmlFor={name}
+          className="text-base font-medium text-gray-900 cursor-pointer"
+        >
           {label}
         </label>
       </div>

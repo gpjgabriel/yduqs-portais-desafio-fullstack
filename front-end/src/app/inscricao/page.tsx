@@ -17,9 +17,9 @@ export default function EnrollmentPage() {
     <main>
       <HeroSection
         title="Queremos saber mais um pouco sobre você"
-        subtitle="Preencha seu nome completo, sem abreviações, igual ao seu documento de identificação. Confira o exemplo."
+        subtitle=""
       />
-      <section className="flex w-full justify-center bg-gray-100 px-6 py-10 md:px-22 md:pb-10">
+      <section className="w-full bg-gray-100 px-6 py-8 md:px-22 md:pb-14">
         <Suspense fallback={<FormLoading />}>
           <EnrollmentForm />
         </Suspense>

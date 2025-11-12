@@ -3,14 +3,8 @@ import Link from "next/link";
 
 export const Footer = () => {
   return (
-    <footer className="w-full bg-blue-900 py-8 text-white">
-      <div
-        className="
-          container mx-auto flex max-w-7xl flex-col 
-          items-start justify-between gap-8 px-6 
-          md:flex-row md:items-center md:px-4
-        "
-      >
+    <footer className="w-full bg-blue-900 text-white md:px-22 py-6">
+      <div className="flex w-full flex-col items-start justify-between gap-8 md:flex-row md:items-center">
         <Link href="/">
           <Image
             src="/logo-estacio-branca.svg"

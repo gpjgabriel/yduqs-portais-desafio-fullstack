@@ -8,12 +8,7 @@ interface PageHeroProps {
 export const HeroSection = ({ title, subtitle }: PageHeroProps) => {
   return (
     <section className="w-full bg-[#144BC8] text-white">
-      <div
-        className="
-          container mx-auto max-w-7xl flex flex-col 
-          items-start gap-4 py-10 px-6 md:px-4
-        "
-      >
+      <div className="flex flex-col items-start gap-4 py-10 px-6 md:px-22 md:p-10">
         <div className="flex w-full flex-col items-start gap-2">
           <h1
             className="
