@@ -31,7 +31,12 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
     if (offer) {
       setSelectedPlanId(null);
       setOpenAccordion(null);
-    }
+
+      document.body.classList.add('modal-open'); //Esconde o footer
+
+    } else document.body.classList.remove('modal-open');
+
+    return () => document.body.classList.remove('modal-open');
   }, [offer]);
 
   const handleToggleAccordion = (id: string) => {

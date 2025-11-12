@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+footer {
+  transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+body.modal-open footer {
+  opacity: 0;
+  transform: translateY(10%);
+}
