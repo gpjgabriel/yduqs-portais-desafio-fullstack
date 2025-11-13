@@ -1,5 +1,5 @@
 import { EnrollmentForm } from "@/components/enrollment/EnrollmentForm";
-import { HeroSection } from "@/components/hero/HeroSection";
+import { HeroSection } from "@/components/common/HeroSection";
 import { Suspense } from "react";
 
 const FormLoading = () => {

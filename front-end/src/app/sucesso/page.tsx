@@ -1,4 +1,4 @@
-import { HeroSection } from "@/components/hero/HeroSection";
+import { HeroSection } from "@/components/common/HeroSection";
 import Link from "next/link";
 
 export default function SuccessPage() {
