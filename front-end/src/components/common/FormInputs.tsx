@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { Control, Controller, FieldError } from "react-hook-form";
+import {
+  Control,
+  Controller,
+  FieldError,
+  FieldErrorsImpl,
+  Merge,
+} from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import TextField from "@mui/material/TextField";
 import Checkbox from "@mui/material/Checkbox";
@@ -11,18 +17,20 @@ import FormControl from "@mui/material/FormControl";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/pt-br";
 
 interface MuiInputProps {
   name: string;
   label: string;
   control: Control<any>;
-  error?: FieldError;
+  error?: FieldError | Merge<FieldError, FieldErrorsImpl<any>>;
 }
 
 // Input de Texto (Nome, Email)
 interface TextInputProps extends MuiInputProps {
   helperText?: React.ReactNode;
+  type?: "text" | "email";
 }
 
 export const MuiTextInput = ({
@@ -31,17 +39,26 @@ export const MuiTextInput = ({
   control,
   error,
   helperText,
+  type = "text",
 }: TextInputProps) => (
   <FormControl fullWidth error={!!error}>
     <Controller
       name={name}
       control={control}
       render={({ field }) => (
-        <TextField {...field} id={name} label={label} error={!!error} />
+        <TextField
+          {...field}
+          type={type}
+          id={name}
+          label={label}
+          error={!!error}
+        />
       )}
     />
     {error ? (
-      <FormHelperText>{error.message}</FormHelperText>
+      <FormHelperText>
+        {typeof error.message === "string" ? error.message : ""}
+      </FormHelperText>
     ) : (
       helperText && <FormHelperText>{helperText}</FormHelperText>
     )}
@@ -67,6 +84,7 @@ const MaskedInputAdapter = React.forwardRef<
       onAccept={(value: any) =>
         onChange({ target: { name: props.name, value } })
       }
+      inputRef={ref as React.RefObject<HTMLInputElement>}
       overwrite
     />
   );
@@ -104,7 +122,11 @@ export const MuiMaskedInput = ({
         />
       )}
     />
-    {error && <FormHelperText>{error.message}</FormHelperText>}
+    {error && (
+      <FormHelperText>
+        {typeof error.message === "string" ? error.message : ""}
+      </FormHelperText>
+    )}
   </FormControl>
 );
 
@@ -122,9 +144,12 @@ export const MuiDateInput = ({
         control={control}
         render={({ field }) => (
           <DatePicker
-            {...field}
             label={label}
-            // format="DD/MM/AA"
+            value={field.value ? dayjs(field.value) : null}
+            onChange={
+              (newValue: Dayjs | null) =>
+                field.onChange(newValue ? newValue.toDate() : null) // ✅ sempre envia Date | null
+            }
             slotProps={{
               textField: {
                 error: !!error,
@@ -134,7 +159,11 @@ export const MuiDateInput = ({
           />
         )}
       />
-      {error && <FormHelperText>{error.message}</FormHelperText>}
+      {error && (
+        <FormHelperText>
+          {typeof error.message === "string" ? error.message : ""}
+        </FormHelperText>
+      )}
     </FormControl>
   </LocalizationProvider>
 );

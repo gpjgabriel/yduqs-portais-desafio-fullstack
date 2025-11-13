@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@mui/material";
+import { Dayjs } from "dayjs";
 
 import {
   MuiTextInput,
@@ -27,19 +28,21 @@ const enrollmentSchema = z.object({
     .refine((val) => val.replace(/\D/g, "").length === 11, {
       message: "CPF inválido (deve ter 11 dígitos)",
     }),
-  birthDate: z
-    .date({ message: "A data de nascimento é obrigatória" })
-    .nullable()
-    .refine((val) => val !== null, {
-      message: "A data de nascimento é obrigatória",
-    })
-    .refine((val) => val === null || val <= new Date(), {
-      message: "A data de nascimento não pode ser futura",
-    }),
-  email: z.email({
-    pattern: z.regexes.email,
-    message: "E-mail inválido",
-  }),
+  birthDate: z.preprocess(
+    (val) => {
+      if (val instanceof Date && !isNaN(val.getTime())) return val;
+      return undefined;
+    },
+    z
+      .date({ message: "A data de nascimento é obrigatória" })
+      .refine((val) => val <= new Date(), {
+        message: "A data de nascimento não pode ser futura",
+      })
+  ),
+  email: z
+    .string()
+    .min(1, "O e-mail é obrigatório")
+    .email("Formato de e-mail inválido"),
   phone: z
     .string()
     .min(1, "O celular é obrigatório")
@@ -73,9 +76,9 @@ export const EnrollmentForm = () => {
     handleSubmit,
     control,
     formState: { errors, isValid },
-  } = useForm<EnrollmentFormData>({
+  } = useForm({
     resolver: zodResolver(enrollmentSchema),
-    mode: "onTouched",
+    mode: "onChange",
     defaultValues: {
       name: "",
       cpf: "",
@@ -94,6 +97,7 @@ export const EnrollmentForm = () => {
   }, [searchParams]);
 
   const onSubmit = async (data: EnrollmentFormData) => {
+    console.log("Birthdate enviada:", data.birthDate);
     if (!offerId || !planId) {
       setServerError("IDs da oferta ou plano não encontrados.");
       return;
