@@ -115,7 +115,7 @@ export const CourseOfferCard = ({
         <div className="py-6 pb-0">
           <button
             onClick={() => onAvançarClick(offer)}
-            className="flex h-12 w-full items-center justify-center rounded-lg bg-[#EE325D] px-6 font-medium text-white transition-colors hover:bg-red-600"
+            className="flex h-12 w-full items-center justify-center rounded-lg bg-[#EE325D] px-6 font-medium text-white transition-colors hover:bg-red-600 cursor-pointer"
           >
             Avançar
           </button>

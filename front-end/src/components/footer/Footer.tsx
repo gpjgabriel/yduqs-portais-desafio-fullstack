@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FooterContacts } from "./FooterContacts";
 import { SubLinksFooter } from "./SubLinkesFooter";
+import { NavLinksFooter } from "./NavLinkFooter";
 
 // Logo
 const LogoBlock = () => (
@@ -56,6 +57,8 @@ export const Footer = () => {
               <LogoBlock />
               <FooterContacts />
             </div>
+            <NavLinksFooter />
+            <div className="h-px w-full bg-white/90" /> {/*  divider */}
             <SubLinksFooter />
             {/* Direitos Reservados */}
             <div className="h-px w-full bg-white/90" /> {/*  divider */}
