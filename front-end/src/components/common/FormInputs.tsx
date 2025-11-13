@@ -1,136 +1,170 @@
 "use client";
 
-import {
-  Control,
-  Controller,
-  FieldError,
-  UseFormRegister,
-} from "react-hook-form";
+import React from "react";
+import { Control, Controller, FieldError } from "react-hook-form";
 import { IMaskInput } from "react-imask";
+import TextField from "@mui/material/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import "dayjs/locale/pt-br";
 
-const inputClasses =
-  "w-full h-14 px-4 text-base text-gray-900 placeholder:text-gray-900/60 border border-gray-300 rounded focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500";
-const errorInputClasses =
-  inputClasses + " border-red-500 focus:border-red-500 focus:ring-red-500";
-const errorTextClasses = "px-4 pt-1 text-xs text-red-500";
-
-interface FormInputProps {
+interface MuiInputProps {
   name: string;
   label: string;
+  control: Control<any>;
   error?: FieldError;
-  register: UseFormRegister<any>;
 }
 
-interface TextInputProps extends FormInputProps {
-  helperText?: string;
-  type?: "text" | "email";
+// Input de Texto (Nome, Email)
+interface TextInputProps extends MuiInputProps {
+  helperText?: React.ReactNode;
 }
 
-export const TextInput = ({
+export const MuiTextInput = ({
   name,
   label,
-  register,
+  control,
   error,
   helperText,
-  type = "text",
-}: TextInputProps) => {
-  return (
-    <div className="flex flex-col">
-      <label htmlFor={name} className="sr-only">
-        {label}
-      </label>
-      <input
-        type={type}
-        id={name}
-        placeholder={label}
-        className={error ? errorInputClasses : inputClasses}
-        {...register(name)}
-      />
-      {error ? (
-        <span className={errorTextClasses}>{error.message}</span>
-      ) : (
-        helperText && (
-          <span className="px-4 pt-1 text-xs text-gray-900/70">
-            {helperText}
-          </span>
-        )
+}: TextInputProps) => (
+  <FormControl fullWidth error={!!error}>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <TextField {...field} id={name} label={label} error={!!error} />
       )}
-    </div>
-  );
-};
+    />
+    {error ? (
+      <FormHelperText>{error.message}</FormHelperText>
+    ) : (
+      helperText && <FormHelperText>{helperText}</FormHelperText>
+    )}
+  </FormControl>
+);
 
-interface MaskedInputProps {
+// Input com Máscara (CPF, Telefone, Ano)
+interface MaskedInputAdapterProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
   name: string;
-  label: string;
   mask: string;
-  error?: FieldError;
-  control: Control<any>;
 }
 
-export const MaskedInput = ({
+const MaskedInputAdapter = React.forwardRef<
+  HTMLElement,
+  MaskedInputAdapterProps
+>(function MaskedInputAdapter(props, ref) {
+  const { onChange, mask, ...other } = props;
+  return (
+    <IMaskInput
+      {...other}
+      mask={mask}
+      onAccept={(value: any) =>
+        onChange({ target: { name: props.name, value } })
+      }
+      overwrite
+    />
+  );
+});
+
+interface MaskedInputProps extends MuiInputProps {
+  mask: string;
+}
+
+export const MuiMaskedInput = ({
   name,
   label,
   mask,
   control,
   error,
-}: MaskedInputProps) => {
-  return (
-    <div className="flex flex-col">
-      <label htmlFor={name} className="sr-only">
-        {label}
-      </label>
+}: MaskedInputProps) => (
+  <FormControl fullWidth error={!!error}>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <TextField
+          {...field}
+          id={name}
+          label={label}
+          error={!!error}
+          slotProps={{
+            input: {
+              inputComponent: MaskedInputAdapter as any,
+              inputProps: {
+                mask: mask,
+              },
+            },
+          }}
+        />
+      )}
+    />
+    {error && <FormHelperText>{error.message}</FormHelperText>}
+  </FormControl>
+);
+
+//  Data
+export const MuiDateInput = ({
+  name,
+  label,
+  control,
+  error,
+}: MuiInputProps) => (
+  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="pt-br">
+    <FormControl fullWidth error={!!error}>
       <Controller
         name={name}
         control={control}
         render={({ field }) => (
-          <IMaskInput
-            mask={mask}
-            id={name}
-            placeholder={label}
-            className={error ? errorInputClasses : inputClasses}
-            value={field.value}
-            onAccept={(value: any) => field.onChange(value)}
-            onBlur={field.onBlur}
+          <DatePicker
+            {...field}
+            label={label}
+            format="DD/MM/ANO"
+            slotProps={{
+              textField: {
+                error: !!error,
+                id: name,
+              },
+            }}
           />
         )}
       />
-      {error && <span className={errorTextClasses}>{error.message}</span>}
-    </div>
-  );
-};
+      {error && <FormHelperText>{error.message}</FormHelperText>}
+    </FormControl>
+  </LocalizationProvider>
+);
 
-interface CheckboxInputProps {
+// Checkbox
+interface CheckboxProps {
   name: string;
   label: React.ReactNode;
+  control: Control<any>;
   error?: FieldError;
-  register: UseFormRegister<any>;
 }
 
-export const CheckboxInput = ({
-  name,
-  label,
-  register,
-  error,
-}: CheckboxInputProps) => {
-  return (
-    <div className="flex flex-col">
-      <div className="flex items-start gap-3">
-        <input
-          type="checkbox"
-          id={name}
-          {...register(name)}
-          className="mt-1 h-5 w-5 shrink-0 appearance-none rounded border border-gray-500 checked:bg-blue-600 checked:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+export const MuiCheckbox = ({ name, label, control, error }: CheckboxProps) => (
+  <FormControl error={!!error}>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <FormControlLabel
+          control={
+            <Checkbox
+              {...field}
+              checked={field.value}
+              onChange={field.onChange}
+            />
+          }
+          label={label}
         />
-        <label
-          htmlFor={name}
-          className="text-base font-medium text-gray-900 cursor-pointer"
-        >
-          {label}
-        </label>
-      </div>
-      {error && (
-        <span className="text-xs text-red-500 ml-8">{error.message}</span>
       )}
-    </div>
-  );
-};
+    />
+    {error && <FormHelperText>{error.message}</FormHelperText>}
+  </FormControl>
+);

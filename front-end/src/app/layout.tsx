@@ -4,6 +4,7 @@ import "./globals.css";
 import "primeicons/primeicons.css";
 import { Header } from "@/components/header/Header";
 import { Footer } from "@/components/footer/Footer";
+import ThemeRegistry from "@/components/theme/ThemeRegistry";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,9 +23,11 @@ export default function RootLayout({
       <body
         className={`${inter} antialiased`}
       >
-        <Header />
-        {children}
-        <Footer />
+        <ThemeRegistry>
+          <Header />
+          {children}
+          <Footer />
+        </ThemeRegistry>
       </body>
     </html>
   );

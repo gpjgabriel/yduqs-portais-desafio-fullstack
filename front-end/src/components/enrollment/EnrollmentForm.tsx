@@ -1,14 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { Button } from "@mui/material";
+
 import {
-  TextInput,
-  MaskedInput,
-  CheckboxInput,
+  MuiTextInput,
+  MuiMaskedInput,
+  MuiDateInput,
+  MuiCheckbox,
 } from "@/components/common/FormInputs";
 
 const enrollmentSchema = z.object({
@@ -16,50 +19,32 @@ const enrollmentSchema = z.object({
     .string()
     .min(1, "O nome é obrigatório")
     .refine((val) => val.trim().split(" ").length >= 2, {
-      message: "O nome deve ser completo - Nome e Sobrenome)",
+      message: "O nome deve ser completo (nome e sobrenome)",
     }),
   cpf: z
     .string()
     .min(1, "O CPF é obrigatório")
     .refine((val) => val.replace(/\D/g, "").length === 11, {
-      message: "CPF inválido",
+      message: "CPF inválido (deve ter 11 dígitos)",
     }),
   birthDate: z
-    .string()
-    .min(10, "A data de nascimento é obrigatória")
-    .refine(
-      (val) => {
-        if (!/^\d{2}\/\d{2}\/\d{4}$/.test(val)) return false;
-
-        const [day, month, year] = val.split("/").map(Number);
-        const dateObj = new Date(year, month - 1, day);
-
-        return (
-          dateObj.getFullYear() === year &&
-          dateObj.getMonth() === month - 1 &&
-          dateObj.getDate() === day &&
-          dateObj <= new Date()
-        );
-      },
-      {
-        message: "Data de nascimento inválida ou futura",
-      }
-    ),
+    .date({ message: "A data de nascimento é obrigatória" })
+    .max(new Date(), { message: "A data de nascimento não pode ser futura" }),
   email: z
     .string()
     .min(1, "O e-mail é obrigatório")
-    .email("E-mail inválido"),
+    .email("Formato de e-mail inválido"),
   phone: z
     .string()
     .min(1, "O celular é obrigatório")
     .refine((val) => val.replace(/\D/g, "").length === 11, {
-      message: "Celular inválido",
+      message: "Celular inválido (deve ter 11 dígitos)",
     }),
   highSchoolYear: z
     .string()
     .min(4, "O ano é obrigatório")
     .refine((val) => parseInt(val, 10) <= new Date().getFullYear(), {
-      message: "Ano de conclusão inválido",
+      message: "O ano de conclusão não pode ser futuro",
     }),
   termsAccepted: z.boolean().refine((val) => val === true, {
     message: "Você deve aceitar os termos",
@@ -79,7 +64,6 @@ export const EnrollmentForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { errors, isValid },
@@ -89,7 +73,7 @@ export const EnrollmentForm = () => {
     defaultValues: {
       name: "",
       cpf: "",
-      birthDate: "",
+      birthDate: undefined,
       email: "",
       phone: "",
       highSchoolYear: "",
@@ -105,16 +89,11 @@ export const EnrollmentForm = () => {
 
   const onSubmit = async (data: EnrollmentFormData) => {
     if (!offerId || !planId) {
-      setServerError(
-        "IDs da oferta ou plano não encontrados. Volte e tente novamente."
-      );
+      setServerError("IDs da oferta ou plano não encontrados.");
       return;
     }
     setIsLoading(true);
     setServerError(null);
-
-    const [day, month, year] = data.birthDate.split("/").map(Number);
-    const isoDate = new Date(year, month - 1, day).toISOString();
 
     const enrollmentData = {
       courseOfferId: offerId,
@@ -123,14 +102,11 @@ export const EnrollmentForm = () => {
         name: data.name,
         email: data.email,
         cpf: data.cpf.replace(/\D/g, ""),
-        birthDate: isoDate,
+        birthDate: data.birthDate.toISOString(),
         phone: data.phone.replace(/\D/g, ""),
         highSchoolGraduationYear: parseInt(data.highSchoolYear, 10),
       },
     };
-
-    setIsLoading(true);
-    setServerError(null);
 
     try {
       const response = await fetch("http://localhost:3000/enrollments", {
@@ -138,7 +114,6 @@ export const EnrollmentForm = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(enrollmentData),
       });
-
       if (!response.ok) {
         const errData = await response.json();
         throw new Error(errData.message || "Falha ao criar matrícula.");
@@ -159,18 +134,24 @@ export const EnrollmentForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex w-full max-w-2xl flex-col gap-8"
+      className="flex w-full max-w-2xl flex-col gap-6"
     >
-      <div className="flex flex-col gap-6">
-        <TextInput
+      <div className="flex flex-col gap-8">
+        <MuiTextInput
           name="name"
           label="Nome completo"
-          register={register}
+          control={control}
           error={errors.name}
-          helperText="Preencha seu nome completo, sem abreviações, igual ao seu documento..."
+          helperText={
+            <span>
+              Preencha seu nome completo, sem abreviações, igual ao seu
+              documento de identificação.{" "}
+              <a className="underline cursor-pointer">Confira o exemplo.</a>
+            </span>
+          }
         />
 
-        <MaskedInput
+        <MuiMaskedInput
           name="cpf"
           label="CPF"
           control={control}
@@ -178,23 +159,21 @@ export const EnrollmentForm = () => {
           mask="000.000.000-00"
         />
 
-        <MaskedInput
+        <MuiDateInput
           name="birthDate"
           label="Data de nascimento"
           control={control}
           error={errors.birthDate}
-          mask="00/00/0000"
         />
 
-        <TextInput
+        <MuiTextInput
           name="email"
           label="E-mail"
-          type="email"
-          register={register}
+          control={control}
           error={errors.email}
         />
 
-        <MaskedInput
+        <MuiMaskedInput
           name="phone"
           label="Celular para contato"
           control={control}
@@ -202,7 +181,7 @@ export const EnrollmentForm = () => {
           mask="(00) 00000-0000"
         />
 
-        <MaskedInput
+        <MuiMaskedInput
           name="highSchoolYear"
           label="Ano de conclusão do ensino médio"
           control={control}
@@ -210,25 +189,24 @@ export const EnrollmentForm = () => {
           mask="0000"
         />
 
-        <div className="flex flex-col gap-6">
-          <CheckboxInput
+        <div className="flex flex-col gap-4">
+          <MuiCheckbox
             name="termsAccepted"
-            register={register}
+            control={control}
             error={errors.termsAccepted}
             label={
-              <>
+              <span>
                 Li e concordo com os{" "}
                 <a href="#" className="underline">
                   termos do edital
                 </a>
-                , bem como com o tratamento dos meus dados para fins de
-                prospecção...
-              </>
+                , bem como com o tratamento dos meus dados...
+              </span>
             }
           />
-          <CheckboxInput
+          <MuiCheckbox
             name="updatesAccepted"
-            register={register}
+            control={control}
             error={errors.updatesAccepted}
             label="Aceito receber atualizações sobre minha inscrição pelo WhatsApp."
           />
@@ -236,13 +214,30 @@ export const EnrollmentForm = () => {
       </div>
 
       <div className="flex flex-col items-start gap-2">
-        <button
+        <Button
           type="submit"
+          variant="contained"
           disabled={!isValid || isLoading}
-          className="flex items-center justify-center h-12 w-28 rounded-lg px-6 py-4 text-base font-medium text-white bg-[#144BC8] hover:bg-blue-800 disabled:bg-gray-200 disabled:text-gray-900 disabled:opacity-70 cursor-pointer"
+          sx={{
+            height: "48px",
+            width: "110px",
+            borderRadius: "8px",
+            textTransform: "none",
+            fontSize: "16px",
+            fontWeight: 500,
+            backgroundColor: "#144BC8",
+            "&:hover": {
+              backgroundColor: "#103a9f",
+            },
+            "&:disabled": {
+              backgroundColor: "#E0E0E0",
+              color: "#121212",
+              opacity: 0.7,
+            },
+          }}
         >
           {isLoading ? "Enviando..." : "Avançar"}
-        </button>
+        </Button>
         {serverError && (
           <span className="text-sm text-red-500">{serverError}</span>
         )}
