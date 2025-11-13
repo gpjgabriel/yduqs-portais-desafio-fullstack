@@ -6,7 +6,7 @@ import {
   type CourseOffer,
 } from './CourseOfferCard';
 import { OfferDetailsModal } from './OfferDetailsModal';
-import { CourseOfferCardSkeleton } from './CourseOfferCardsSkeleton';
+import { CourseOfferCardSkeleton } from './CourseOfferCardSkeleton';
 
 async function getCourseOffers(): Promise<CourseOffer[]> {
   try {
