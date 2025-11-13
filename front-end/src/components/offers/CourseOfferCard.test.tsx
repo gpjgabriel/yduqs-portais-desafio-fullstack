@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { CourseOfferCard, type CourseOffer } from './CourseOfferCard';
 
 // >>>>>>>>>>>> MOCKS DOS DADOS <<<<<<<<<<<<<<<<<<
@@ -61,6 +61,32 @@ describe('CourseOfferCard', () => {
     expect(screen.getByText('Digital (EaD)')).toBeInTheDocument();
     expect(screen.getByText(/Inscreva-se para saber/)).toBeInTheDocument();
     expect(screen.getByText('RIO DE JANEIRO - BARRA DA TIJUCA')).toBeInTheDocument();
+  });
+
+  it('Verifica se ao clicar no botão "Avançar" do card "Presencial", ele envia os dados corretos', () => {
+    render(<CourseOfferCard offer={MOCK_OFFER_PRESENCIAL} onAvançarClick={mockOnAvançarClick} />);
+
+    const avançarButton = screen.getByRole('button', { name: 'Avançar' });
+    
+    fireEvent.click(avançarButton);
+
+    expect(mockOnAvançarClick).toHaveBeenCalledTimes(1);
+    
+    // Verifica se ela foi chamada com os dados corretos
+    expect(mockOnAvançarClick).toHaveBeenCalledWith(MOCK_OFFER_PRESENCIAL);
+  });
+
+  it('Verifica se ao clicar no botão "Avançar" do card "Digital", ele envia os dados corretos', () => {
+    render(<CourseOfferCard offer={MOCK_OFFER_DIGITAL} onAvançarClick={mockOnAvançarClick} />);
+
+    const avançarButton = screen.getByRole('button', { name: 'Avançar' });
+    
+    fireEvent.click(avançarButton);
+
+    expect(mockOnAvançarClick).toHaveBeenCalledTimes(1);
+    
+    // Verifica se ela foi chamada com os dados corretos
+    expect(mockOnAvançarClick).toHaveBeenCalledWith(MOCK_OFFER_DIGITAL);
   });
 });
 
