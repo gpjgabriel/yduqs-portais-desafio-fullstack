@@ -190,4 +190,19 @@ describe("CourseOfferSection", () => {
       expect(screen.queryByTestId("mock-modal")).not.toBeInTheDocument();
     });
   });
+
+  it("Verifica se exibi uma mensagem de erro se o fetch falhar", async () => {
+    //Simula uma falha do fetch da API
+    (global.fetch as jest.Mock).mockRejectedValue(new Error("Falha na API"));
+
+    render(<CourseOfferSection />);
+
+    // Verifica se o skeleton não está na tela
+    await waitFor(() => {
+      expect(screen.queryByTestId("skeleton")).not.toBeInTheDocument();
+    });
+
+    //Verifica se a msgn de erro está na tela
+    expect(screen.getByText("Nenhuma oferta encontrada.")).toBeInTheDocument();
+  });
 });
