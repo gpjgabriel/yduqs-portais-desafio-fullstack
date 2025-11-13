@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { FooterContacts } from "./FooterContacts";
 import { SubLinksFooter } from "./SubLinkesFooter";
 import { NavLinksFooter } from "./NavLinkFooter";
+import { PrivacyLinkFooter } from "./PrivacyLinkFooter";
 
 // Logo
 const LogoBlock = () => (
@@ -41,13 +42,14 @@ export const Footer = () => {
         {isEnrollmentPage ? (
           // PÁGINA DE INSCRIÇÃO
           <div className="flex w-full flex-col items-start justify-between gap-6 md:flex-row md:items-center">
-            <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:gap-8">
+            <div className="flex flex-col items-start gap-10 md:flex-row md:items-center md:gap-8">
               <div className="md:hidden">
                 {/*  Sem logo no Desktop */}
                 <LogoBlock />
               </div>
               <FooterContacts />
             </div>
+            <PrivacyLinkFooter />
           </div>
         ) : (
           // HOME (COMPLETO)
