@@ -6,6 +6,7 @@ import {
   type CourseOffer,
 } from './CourseOfferCard';
 import { OfferDetailsModal } from './OfferDetailsModal';
+import { CourseOfferCardSkeleton } from './CourseOfferCardsSkeleton';
 
 async function getCourseOffers(): Promise<CourseOffer[]> {
   try {
@@ -54,13 +55,20 @@ export const CourseOfferSection = () => {
       {/* >>>>>>>>>> Cards <<<<<<<<<<*/}
       <div className="w-full px-4 p-6 md:px-22 md:pb-14">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {offers.map((offer) => (
-            <CourseOfferCard
-              key={offer.id}
-              offer={offer}
-              onAvançarClick={handleAvançarClick}
-            />
-          ))}
+          {isLoading ? (
+            <>
+              <CourseOfferCardSkeleton />
+              <CourseOfferCardSkeleton />
+            </>
+          ) : (
+            offers.map((offer) => (
+              <CourseOfferCard
+                key={offer.id}
+                offer={offer}
+                onAvançarClick={handleAvançarClick}
+              />
+            ))
+          )}
         </div>
         
         {!isLoading && offers.length === 0 && (
