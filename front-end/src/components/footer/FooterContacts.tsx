@@ -4,7 +4,7 @@ export const FooterContacts = () => {
   return (
     <div className="flex flex-col items-start gap-4 md:flex-row md:items-center">
       <a
-        href="https://wa.me/..."
+        href="https://wa.me/5562985835123"
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center gap-3 transition-opacity hover:opacity-80"

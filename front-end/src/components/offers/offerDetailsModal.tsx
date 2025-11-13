@@ -57,7 +57,7 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
       <button
         onClick={onClose}
         aria-label="Fechar"
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-white md:h-12 md:w-12 hover:bg-gray-100 transition-colors"
+        className="flex h-10 w-10 items-center justify-center rounded-full bg-white md:h-12 md:w-12 hover:bg-gray-100 transition-colors cursor-pointer"
       >
         <i className="pi pi-times text-xl text-gray-900"></i>
       </button>
@@ -89,7 +89,7 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
 
           {isDigitalModal && (
             <div className="bg-[#144BC8] px-4 pb-4 text-white md:px-8 md:pb-6">
-              <div className="flex items-start gap-2 pt-4 pb-2 md:pt-6 md:pb-4">
+              <div className="flex flex-col items-start gap-2 pt-4 pb-2 md:pt-6 md:pb-4">
                 <i
                   className="pi pi-info-circle shrink-0"
                   style={{ fontSize: '1.5rem' }}
@@ -132,7 +132,7 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
                           value={plan.id}
                           checked={selectedPlanId === plan.id}
                           onChange={() => setSelectedPlanId(plan.id)}
-                          className="h-5 w-5 appearance-none rounded-full border-2 border-gray-700 checked:border-[6px] checked:border-gray-900"
+                          className="h-5 w-5 appearance-none rounded-full border-2 border-gray-700 checked:border-[6px] checked:border-gray-900 cursor-pointer"
                         />
                         <span className="text-sm font-medium text-gray-900">
                           {plan.description}
@@ -153,7 +153,7 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
             <div className="rounded-lg border border-gray-300">
               <button
                 onClick={() => handleToggleAccordion('bolsa')}
-                className="flex w-full items-center justify-between p-4 md:p-6"
+                className="flex w-full items-center justify-between p-4 md:p-6 cursor-pointer"
               >
                 <span className="text-base font-medium text-gray-900">
                   Sobre a Bolsa Incentivo
@@ -173,7 +173,7 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
             <div className="rounded-lg border border-gray-300">
               <button
                 onClick={() => handleToggleAccordion('resumo')}
-                className="flex w-full items-center justify-between p-4 md:p-6"
+                className="flex w-full items-center justify-between p-4 md:p-6 cursor-pointer"
               >
                 <span className="text-base font-medium text-gray-900">
                   Resumo das suas escolhas
@@ -191,9 +191,6 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
               )}
             </div>
           </div>
-
-          {/* Espaçador */}
-          <div className="h-20 md:h-24"></div>
         </div>
 
         {/*>>>>>>>>>>> Footer <<<<<<<<<<<,*/}
@@ -207,7 +204,7 @@ export const OfferDetailsModal = ({ offer, onClose }: OfferDetailsModalProps) =>
               );
             }}
             disabled={!isDigitalModal && !selectedPlanId}
-            className="w-full rounded-lg bg-[#EE325D] p-3 text-base font-medium text-white disabled:opacity-50 disabled:bg-gray-300"
+            className="w-full rounded-lg bg-[#EE325D] p-3 text-base font-medium text-white disabled:opacity-50 disabled:bg-gray-300 cursor-pointer"
           >
             Avançar
           </button>

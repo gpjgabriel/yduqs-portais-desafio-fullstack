@@ -129,7 +129,7 @@ export const CheckboxInput = ({
         </label>
       </div>
       {error && (
-        <span className="text-xs text-red-500 -mt-2 ml-8">{error.message}</span>
+        <span className="text-xs text-red-500 ml-8">{error.message}</span>
       )}
     </div>
   );
