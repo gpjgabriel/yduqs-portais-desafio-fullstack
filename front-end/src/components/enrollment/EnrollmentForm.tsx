@@ -144,9 +144,9 @@ export const EnrollmentForm = () => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex w-full max-w-2xl flex-col gap-6"
+      className="flex w-full max-w-2xl flex-col gap-8"
     >
-      <div className="flex flex-col gap-8">
+      <div className="flex flex-col gap-6">
         <MuiTextInput
           name="name"
           label="Nome completo"
