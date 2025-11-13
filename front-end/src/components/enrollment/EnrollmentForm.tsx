@@ -29,11 +29,17 @@ const enrollmentSchema = z.object({
     }),
   birthDate: z
     .date({ message: "A data de nascimento é obrigatória" })
-    .max(new Date(), { message: "A data de nascimento não pode ser futura" }),
-  email: z
-    .string()
-    .min(1, "O e-mail é obrigatório")
-    .email("Formato de e-mail inválido"),
+    .nullable()
+    .refine((val) => val !== null, {
+      message: "A data de nascimento é obrigatória",
+    })
+    .refine((val) => val === null || val <= new Date(), {
+      message: "A data de nascimento não pode ser futura",
+    }),
+  email: z.email({
+    pattern: z.regexes.email,
+    message: "E-mail inválido",
+  }),
   phone: z
     .string()
     .min(1, "O celular é obrigatório")
@@ -73,7 +79,7 @@ export const EnrollmentForm = () => {
     defaultValues: {
       name: "",
       cpf: "",
-      birthDate: undefined,
+      birthDate: null,
       email: "",
       phone: "",
       highSchoolYear: "",
@@ -102,7 +108,7 @@ export const EnrollmentForm = () => {
         name: data.name,
         email: data.email,
         cpf: data.cpf.replace(/\D/g, ""),
-        birthDate: data.birthDate.toISOString(),
+        birthDate: data.birthDate?.toISOString(),
         phone: data.phone.replace(/\D/g, ""),
         highSchoolGraduationYear: parseInt(data.highSchoolYear, 10),
       },

@@ -124,7 +124,7 @@ export const MuiDateInput = ({
           <DatePicker
             {...field}
             label={label}
-            format="DD/MM/ANO"
+            // format="DD/MM/AA"
             slotProps={{
               textField: {
                 error: !!error,
