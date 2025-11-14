@@ -144,4 +144,76 @@ describe("EnrollmentsService", () => {
       });
     });
   });
+
+  it("deve lançar um erro se o plano de pagamento não for encontrado", async () => {
+    mockTx.paymentPlan.findFirst.mockResolvedValue(null);
+
+    // Tenta criar com um plano null
+    await expect(service.create(createEnrollmentDto)).rejects.toThrow(
+      NotFoundException
+    );
+
+    // Verifica o retorno da msgn de erro
+    await expect(service.create(createEnrollmentDto)).rejects.toThrow(
+      "Plano de pagamento ou oferta de curso inválida."
+    );
+  });
+
+  it("deve lançar um erro se a matrícula já existir", async () => {
+    // Mock do dados do plano e do aluno
+    const mockPaymentPlan = { id: 10, offerId: 1, total: "1500.00" };
+    const mockStudent = { id: 1, ...createEnrollmentDto.student };
+
+    mockTx.paymentPlan.findFirst.mockResolvedValue(mockPaymentPlan);
+    mockTx.student.upsert.mockResolvedValue(mockStudent);
+
+    // Simula uma matrícula encontrada
+    const mockExistingEnrollment = {
+      id: 99, // Um ID de uma matrícula existente
+      studentId: 1,
+      courseOfferId: 1,
+      paymentPlanId: 10,
+      finalAmount: "1500.00",
+    };
+    mockTx.enrollment.findFirst.mockResolvedValue(mockExistingEnrollment);
+
+    // Verifica se a matrícula é rejeitada e retorna erro
+    await expect(service.create(createEnrollmentDto)).rejects.toThrow(
+      ConflictException
+    );
+
+    await expect(service.create(createEnrollmentDto)).rejects.toThrow(
+      "O aluno já está matriculado nesta oferta de curso."
+    );
+
+    // Garante que o a função de criar não foi chamada
+    expect(mockTx.enrollment.create).not.toHaveBeenCalled();
+  });
+
+  it("deve lançar um erro se tenta cruar uma matrícula com um aluno que já existe (mesmo email)", async () => {
+    const mockPaymentPlan = { id: 10, offerId: 1, total: "1500.00" };
+    mockTx.paymentPlan.findFirst.mockResolvedValue(mockPaymentPlan);
+
+    // Simula um erro P2002 (e-mail duplicado)
+    const prismaP2002Error = new Prisma.PrismaClientKnownRequestError(
+      "Unique constraint failed",
+      { code: "P2002", clientVersion: "x.x" }
+    );
+
+    // Configura o mock para retornar o erro
+    mockTx.student.upsert.mockRejectedValue(prismaP2002Error);
+
+    // Verifica se a matrícula é rejeitada e retorna erro
+    await expect(service.create(createEnrollmentDto)).rejects.toThrow(
+      ConflictException
+    );
+
+    await expect(service.create(createEnrollmentDto)).rejects.toThrow(
+      "Um aluno com este CPF ou E-mail já existe."
+    );
+
+    // Garante que as funções de criar matrícula não foram chamadas
+    expect(mockTx.enrollment.findFirst).not.toHaveBeenCalled();
+    expect(mockTx.enrollment.create).not.toHaveBeenCalled();
+  });
 });
