@@ -55,4 +55,15 @@ describe("CourseOffers (e2e)", () => {
     // Guarda um ID válido para o próximo teste
     validOfferId = response.body[0].id;
   });
+
+  it("GET /course-offers/:id -> deve retornar o texto placeholder", () => {
+    // Usa o ID do teste anterior
+    return (
+      request(app.getHttpServer())
+        .get(`/course-offers/${validOfferId}`)
+        .expect(200)
+        // Verifica se ele retorna a mensagem do service
+        .expect(`This action returns a #${validOfferId} courseOffer`)
+    );
+  });
 });
