@@ -1,88 +1,205 @@
-# 🚀 Desafio Fullstack – Processo Seletivo
+# YDUQS PORTAIS
 
-Bem-vindo(a)! Este é o repositório base para o **Desafio Fullstack** da nossa etapa de seleção de novos colaboradores.
+🚀 Desafio Fullstack – Teste Técnico: Portal de Matrículas
 
----
+Esta é a solução completa para o Desafio Fullstack, implementando uma aplicação onde usuários possam visualizar ofertas de cursos e realizar matrículas.
 
-## 🎯 Objetivo
+## Status do Projeto
 
-Construir uma aplicação **fullstack** onde usuários podem visualizar ofertas de cursos, selecionar um curso e realizar a matrícula.
+- **Back-end: Implementação Prática**
 
-O **handoff de design** está disponível no Figma:  
-🔗 [Acessar Figma](https://www.figma.com/design/jJLBqZG5RLoL9pbviYvAZW/Teste---Desenvolvimento?node-id=8-2156&t=FjZv9T176fS24B4e-0)  
-🔑 **Senha:** `Teste-123`
+  - [x] Estrutura do Banco de Dados em Container
+  - [x] Estrutura em camadas (controllers, services, repositories)
+  - [x] Rota de Ofertas de Curso
+  - [x] Rota com Planos de Pagamento
+  - [x] Rota de Inscrições
+  - [x] Validações de entrada (email válido, campos obrigatórios, etc)
+  - [x] Documentação da API
+  - [x] Testes (Unitários e Integração)
 
----
-
-## 🛠️ Requisitos
-
-### Backend (Node.js + TypeScript)
-- Framework: **NestJS**  
-- Banco de dados: **PostgreSQL ou MongoDB**  
-- Estrutura em camadas (**controllers, services, repositories**)  
-- Validações de entrada (ex.: email válido, campos obrigatórios)  
-- Documentação da API (**Swagger ou similar**)  
-- Testes automatizados (**unitários e integração**)  
-
-### Frontend (React + TypeScript)
-- Framework: **React**  
-- Gerenciamento de estado: **Context API**  
-- Validações de formulário (email, telefone, etc.)  
-- Feedback ao usuário (**loading, erros, sucesso**)  
-- Design responsivo  
-- Testes com **React Testing Library**
-
-### Extras (opcional, diferencial)
-- Banco em **Docker** com migrations (**Prisma, TypeORM ou Sequelize**)  
-- Logs estruturados  
-- Uso de bibliotecas de UI como **shadcn/ui**, **Material UI (MUI)**, **Chakra UI** ou outras similares para acelerar o desenvolvimento do frontend
-  
----
-
-## ✅ Regras Importantes
-
-1. **Commits**: queremos acompanhar sua **evolução e raciocínio lógico**.  
-   - Faça **commits pequenos e frequentes**, mostrando sua linha de pensamento.  
-   - Não envie tudo em **um único commit final**.
-
-2. **Uso de IA**: você pode usar IA como **fonte de consulta**, mas **não é permitido** gerar **100% do projeto apenas com IA**. Queremos ver **seu raciocínio e implementação**.
+- **Front-end: Implementação Prática**
+  - [x] Tela de Ofertas de curso (Presencial e Digital)
+  - [x] Modal Sidebar contendo os planos de pagamento (Presencial) ou não (Digital)
+  - [x] Tela com formulário de inscrição com validação dos campos (email, cpf, etc)
+  - [x] Tela de feedback positivo para incrição bem sucedida
+  - [x] Design Responsivo
+  - [x] Feedback ao usuário (loading, erros, sucesso)
+  - [x] Testes (Unitários e Integração)
 
 ---
 
-## 📊 Critérios de Avaliação
+## 🛠️ Stack Técnica
 
-- **Qualidade do código** → clareza, boas práticas, clean code.  
-- **Arquitetura** → separação de responsabilidades, escalabilidade.  
-- **Validações e UX** → feedback claro ao usuário para erros e sucesso.  
-- **Testes** → cobertura e qualidade dos testes.  
-- **Documentação** → README explicando o setup.  
+A stack deste projeto foi escolhida para atender aos requisitos obrigatórios e promover uma experiência de desenvolvimento moderna e unificada. O projeto está estruturado em um monorepo contendo dois projetos principais:
 
----
+- **Back-end: NestJS e Prisma**
 
-## ▶️ Como começar
+  - **Linguagem:** [Typescript](https://www.typescriptlang.org/)
+  - **API RESTful:** [NestJS](https://nestjs.com/)
+  - **ORM:** [Prisma](https://www.prisma.io/)
+  - **Banco de Dados:** [PostgreSQL](https://www.postgresql.org/)
+  - **DevOps Container:** [Docker](https://www.docker.com/)
+  - **Zod:** [Zod](https://zod.dev/) (Validação de schemas)
+  - **Documentação:** [Swagger ](https://swagger.io/)
+  - **Testes unitários e E2E:** [Jest](https://jestjs.io/)
 
-1. Faça um **fork** deste repositório para a sua conta GitHub.  
-   - Clique no botão **Fork** no canto superior direito desta página.  
-   - Isso criará uma cópia do repositório no seu perfil.  
+- **Front-end: Next.Js + Material/UI + TailWind CSS**
 
-2. Clone o repositório que você acabou de forkear para a sua máquina local:  
-   ```bash
-   git clone https://github.com/<seu-usuario>/yduqs-portais-desafio-fullstack.git
-   ```
-
-3. Acesse a pasta do projeto:  
-   ```bash
-   cd yduqs-portais-desafio-fullstack
-   ```
-
-4. Configure e rode o **backend** e o **frontend** de acordo com os requisitos definidos.  
-
-5. Desenvolva sua solução fazendo **commits pequenos e frequentes**, para que possamos acompanhar sua linha de raciocínio e evolução.  
-
-6. Ao finalizar, envie o **link do seu fork** para avaliação.  
-   - Exemplo: `https://github.com/<seu-usuario>/yduqs-portais-desafio-fullstack`
+  - **Linguagem:** [Typescript](https://www.typescriptlang.org/)
+  - **Freamwork Web:** [Next.js](https://nextjs.org/)
+  - **UI/UX CSS:** [Tailwind](https://tailwindcss.com/)
+  - **UI/UX Componentes:** [Material UI](https://mui.com/)
+  - **Testes:** [Jest](https://jestjs.io/) e [React Testing Library](https://testing-library.com/)
 
 ---
 
-Boa sorte! 🚀  
-Estamos ansiosos para ver sua solução.
+## 🛠️ Instruções de Instalação e Execução
+
+Siga os passos abaixo para configurar e executar o projeto localmente.
+
+### 1. Pré-requisitos
+
+- [Node.js](https://nodejs.org/) (v18 ou superior)
+- [Git](https://git-scm.com/)
+- [Docker](https://www.docker.com/products/docker-desktop/) - Docker Compose e DB PostgreSQL
+- [Npm](https://www.npmjs.com/) Gerenciador de pacotes (npm ou yarn)
+
+### 2. Clonar o Repositório
+
+```bash
+git clone [https://github.com/gpjgabriel/yduqs-portais-desafio-fullstack](https://github.com/gpjgabriel/yduqs-portais-desafio-fullstack)
+cd yduqs-portais-desafio-fullstack
+```
+
+### 3. Iniciar o Banco de Dados (Docker)
+
+O docker-compose.yml na raiz do projeto subirá uma instância do PostgreSQL.
+
+```bash
+cd back-end
+docker-compose up -d
+```
+
+Isso iniciará um container PostgreSQL na porta 5432.
+
+### 4. Instalar Dependências e Executar o Back-end
+
+```bash
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+```
+
+Crie um arquivo .env na raiz de /back-end com base no .env.example
+
+```bash
+touch .env
+cp .env.example .env
+```
+
+Aplique as migrações do Prisma e popule o banco (seed):
+
+```bash
+npx prisma migrate dev
+npx prisma db seed
+```
+
+Inicie o servidor do back-end:
+
+```bash
+npm run start:dev
+```
+
+- A API estará disponível em [http://localhost:3000](http://localhost:3000)
+
+### 5. Instalar Dependências e Executar o Front-end
+
+Em um novo terminal, navegue até a pasta do front-end.
+
+```bash
+cd front-end
+
+npm install
+# ou
+yarn install
+# ou
+pnpm install
+```
+
+Crie um arquivo .env na raiz de /front-end com base no .env.example
+
+```bash
+touch .env
+cp .env.example .env
+```
+
+Inicie o servidor do front-end:
+
+```bash
+npm run dev
+# ou o comando abaixo para evitar conflito com a API na porta 3000
+npm run dev -- -p 3001
+```
+
+- A aplicação estará disponível em [http://localhost:3001](http://localhost:3001)
+
+Rotas principais:
+
+- Página de Ofertas: [http://localhost:3000/](http://localhost:3000/)
+
+- Página com formulário de inscrição: [http://localhost:3000/inscricao](http://localhost:3000/inscricao) (Necessita escolher uma oferta)
+
+### 6. Executando os Testes 🧪
+
+Os testes são cruciais para este projeto e podem ser executados separadamente.
+
+## Back-end
+
+```bash
+cd back-end
+```
+
+# Rodar testes unitários
+
+```bash
+npm run test
+```
+
+# Rodar testes E2E
+
+```bash
+npm run test:e2e
+```
+
+## Front-end
+
+```bash
+cd front-end
+npm run test
+```
+
+### 7. Estrutura do Projeto 📁
+
+/  
+├── back-end/ (API NestJS)  
+│ ├── prisma/ (Schema, migrações e seed do banco)  
+│ └── src/ (Código-fonte da API)  
+│ ├── course-offers/ (Módulo de Ofertas de Cursos)  
+│ └── enrollments/ (Módulo de Matrículas)  
+├── front-end/ (Aplicação Next.js)  
+│ └── src/  
+│ └── app/ (Next.js App Router)  
+│ │ ├── (offers)/ (Rota e página de ofertas)  
+│ │ ├── (enrollment)/ (Rota e página de matrícula)  
+│ └── components/ (Componentes React reutilizáveis)  
+├── .gitignore  
+├── docker-compose.yml (Config. do container PostgreSQL)  
+└── README.md (Este arquivo)
+
+👨‍💻 Autor
+
+Desenvolvido por: Gabriel Paiva Justo  
+📧 gpj_gabriel@hotmail.com  
+💼 LinkedIn: linkedin.com/in/gabriel-paiva-justo

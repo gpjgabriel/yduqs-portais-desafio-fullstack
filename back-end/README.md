@@ -1,75 +1,138 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# YDUQS PORTAIS
 
-[travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
-[travis-url]: https://travis-ci.org/nestjs/nest
-[linux-image]: https://img.shields.io/travis/nestjs/nest/master.svg?label=linux
-[linux-url]: https://travis-ci.org/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="blank">Node.js</a> framework for building efficient and scalable server-side applications, heavily inspired by <a href="https://angular.io" target="blank">Angular</a>.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore"><img src="https://img.shields.io/npm/dm/@nestjs/core.svg" alt="NPM Downloads" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://api.travis-ci.org/nestjs/nest.svg?branch=master" alt="Travis" /></a>
-<a href="https://travis-ci.org/nestjs/nest"><img src="https://img.shields.io/travis/nestjs/nest/master.svg?label=linux" alt="Linux" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#5" alt="Coverage" /></a>
-<a href="https://gitter.im/nestjs/nestjs?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=body_badge"><img src="https://badges.gitter.im/nestjs/nestjs.svg" alt="Gitter" /></a>
-<a href="https://opencollective.com/nest#backer"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec"><img src="https://img.shields.io/badge/Donate-PayPal-dc3d53.svg"/></a>
-  <a href="https://twitter.com/nestframework"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+🚀 Desafio Fullstack – Teste Técnico: Portal de Matrículas
 
-## Description
+Esta é a solução completa para o Desafio Fullstack, implementando uma aplicação onde usuários possam visualizar ofertas de cursos e realizar matrículas.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Status do Projeto
 
-## Installation
+- **Back-end: Implementação Prática**
+
+  - [x] Estrutura do Banco de Dados em Container
+  - [x] Estrutura em camadas (controllers, services, repositories)
+  - [x] Rota de Ofertas de Curso
+  - [x] Rota com Planos de Pagamento
+  - [x] Rota de Inscrições
+  - [x] Validações de entrada (email válido, campos obrigatórios, etc)
+  - [x] Documentação da API
+  - [x] Testes (Unitários e Integração)
+
+---
+
+## 🛠️ Stack Técnica
+
+A stack deste projeto foi escolhida para atender aos requisitos obrigatórios e promover uma experiência de desenvolvimento moderna e unificada.
+
+- **Back-end: NestJS e Prisma**
+
+  - **Linguagem:** [Typescript](https://www.typescriptlang.org/)
+  - **API RESTful:** [NestJS](https://nestjs.com/)
+  - **ORM:** [Prisma](https://www.prisma.io/)
+  - **Banco de Dados:** [PostgreSQL](https://www.postgresql.org/)
+  - **DevOps Container:** [Docker](https://www.docker.com/)
+  - **Zod:** [Zod](https://zod.dev/) (Validação de schemas)
+  - **Documentação:** [Swagger ](https://swagger.io/)
+  - **Testes unitários e E2E:** [Jest](https://jestjs.io/)
+
+---
+
+## 🛠️ Instruções de Instalação e Execução
+
+Siga os passos abaixo para configurar e executar o projeto localmente.
+
+### 1. Pré-requisitos
+
+- [Node.js](https://nodejs.org/) (v18 ou superior)
+- [Git](https://git-scm.com/)
+- [Docker](https://www.docker.com/products/docker-desktop/) - Docker Compose e DB PostgreSQL
+- [Npm](https://www.npmjs.com/) Gerenciador de pacotes (npm ou yarn)
+
+### 2. Clonar o Repositório
 
 ```bash
-$ npm install
+git clone [https://github.com/gpjgabriel/yduqs-portais-desafio-fullstack](https://github.com/gpjgabriel/yduqs-portais-desafio-fullstack)
+cd yduqs-portais-desafio-fullstack
 ```
 
-## Running the app
+### 3. Iniciar o Banco de Dados (Docker)
+
+O docker-compose.yml na raiz do projeto subirá uma instância do PostgreSQL.
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cd back-end
+docker-compose up -d
 ```
 
-## Test
+Isso iniciará um container PostgreSQL na porta 5432.
+
+### 4. Instalar Dependências e Executar o Back-end
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm install
+# ou
+yarn install
+# ou
+pnpm install
 ```
 
-## Support
+Crie um arquivo .env na raiz de /back-end com base no .env.example
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+touch .env
+cp .env.example .env
+```
 
-## Stay in touch
+Aplique as migrações do Prisma e popule o banco (seed):
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```bash
+npx prisma migrate dev
+npx prisma db seed
+```
 
-## License
+Inicie o servidor do back-end:
 
-  Nest is [MIT licensed](LICENSE).
+```bash
+npm run start:dev
+```
+
+- A API estará disponível em [http://localhost:3000](http://localhost:3000)
+
+### 5. Executando os Testes 🧪
+
+Os testes são cruciais para este projeto e podem ser executados separadamente.
+
+## Back-end
+
+```bash
+cd back-end
+```
+
+# Rodar testes unitários
+
+```bash
+npm run test
+```
+
+# Rodar testes E2E
+
+```bash
+npm run test:e2e
+```
+
+### 6. Estrutura do Projeto 📁
+
+/  
+├── back-end/ (API NestJS)  
+│ ├── prisma/ (Schema, migrações e seed do banco)  
+│ └── src/ (Código-fonte da API)  
+│ ├── course-offers/ (Módulo de Ofertas de Cursos)  
+│ └── enrollments/ (Módulo de Matrículas)  
+├── .gitignore  
+├── docker-compose.yml (Config. do container PostgreSQL)  
+└── README.md (Este arquivo)
+
+👨‍💻 Autor
+
+Desenvolvido por: Gabriel Paiva Justo  
+📧 gpj_gabriel@hotmail.com  
+💼 LinkedIn: linkedin.com/in/gabriel-paiva-justo
