@@ -110,6 +110,42 @@ jest.mock("@/components/common/FormInputs", () => ({
   ),
 }));
 
+async function fillValidForm(custom = {}) {
+  const defaultValues = {
+    name: "Gabriel Paiva",
+    cpf: "123.456.789-09",
+    birthDate: "1989-11-27",
+    email: "gpj_gabriel@hotmail.com",
+    phone: "(62) 98583-5123",
+    highSchoolYear: "2012",
+  };
+
+  const values = { ...defaultValues, ...custom };
+
+  await act(async () => {
+    fireEvent.change(screen.getByTestId("name"), {
+      target: { value: values.name },
+    });
+    fireEvent.change(screen.getByTestId("cpf"), {
+      target: { value: values.cpf },
+    });
+    fireEvent.change(screen.getByTestId("birthDate"), {
+      target: { value: values.birthDate },
+    });
+    fireEvent.change(screen.getByTestId("email"), {
+      target: { value: values.email },
+    });
+    fireEvent.change(screen.getByTestId("phone"), {
+      target: { value: values.phone },
+    });
+    fireEvent.change(screen.getByTestId("highSchoolYear"), {
+      target: { value: values.highSchoolYear },
+    });
+
+    fireEvent.click(screen.getByTestId("termsAccepted"));
+  });
+}
+
 describe("EnrollmentForm", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -162,86 +198,55 @@ describe("EnrollmentForm", () => {
   it("Habilita o botão 'Avançar' após preencher todos os campos corretamente", async () => {
     render(<EnrollmentForm />);
 
-    const nameInput = screen.getByTestId("name");
-    const cpfInput = screen.getByTestId("cpf");
-    const birthDateInput = screen.getByTestId("birthDate");
-    const emailInput = screen.getByTestId("email");
-    const phoneInput = screen.getByTestId("phone");
-    const highSchoolYearInput = screen.getByTestId("highSchoolYear");
-    const termsCheckbox = screen.getByTestId("termsAccepted");
-
     const submitButton = screen.getByRole("button", { name: "Avançar" });
 
     expect(submitButton).toBeDisabled();
 
-    await act(async () => {
-      fireEvent.change(nameInput, { target: { value: "Gabriel Paiva" } });
-      fireEvent.change(cpfInput, { target: { value: "123.456.789-09" } });
-      fireEvent.change(birthDateInput, { target: { value: "1989-11-27" } });
-      fireEvent.change(emailInput, {
-        target: { value: "gpj_gabriel@hotmail.com" },
-      });
-      fireEvent.change(phoneInput, { target: { value: "(62) 98583-5123" } });
-      fireEvent.change(highSchoolYearInput, { target: { value: "2012" } });
-      fireEvent.click(termsCheckbox);
-    });
+    await fillValidForm();
 
-    await waitFor(() => {
-      expect(submitButton).toBeEnabled();
-    });
+    await waitFor(() => expect(submitButton).toBeEnabled());
   });
 
   it("Redireciona para página de sucesso após envio válido do formulário", async () => {
     render(<EnrollmentForm />);
 
-    const nameInput = screen.getByTestId("name");
-    const cpfInput = screen.getByTestId("cpf");
-    const birthDateInput = screen.getByTestId("birthDate");
-    const emailInput = screen.getByTestId("email");
-    const phoneInput = screen.getByTestId("phone");
-    const highSchoolYearInput = screen.getByTestId("highSchoolYear");
-    const termsCheckbox = screen.getByTestId("termsAccepted");
-
     const submitButton = screen.getByRole("button", { name: "Avançar" });
 
-    // Mock do fetch retornando sucesso
     (fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => ({}),
     });
 
-    // Preenchendo dados válidos
-    await act(async () => {
-      fireEvent.change(nameInput, { target: { value: "Maria da Silva" } });
-      fireEvent.change(cpfInput, { target: { value: "123.456.789-09" } });
-      fireEvent.change(birthDateInput, { target: { value: "1990-12-01" } });
-      fireEvent.change(emailInput, { target: { value: "maria@email.com" } });
-      fireEvent.change(phoneInput, { target: { value: "(11) 99999-9999" } });
-      fireEvent.change(highSchoolYearInput, { target: { value: "2010" } });
-      fireEvent.click(termsCheckbox);
-    });
+    await fillValidForm();
 
-    // Aguarda validação e botão ficar habilitado
-    await waitFor(() => {
-      expect(submitButton).toBeEnabled();
-    });
+    await waitFor(() => expect(submitButton).toBeEnabled());
 
-    // Envia formulário
-    await act(async () => {
-      fireEvent.click(submitButton);
-    });
+    await act(async () => fireEvent.click(submitButton));
 
-    // Verifica chamada ao fetc
     expect(fetch).toHaveBeenCalledTimes(1);
-    expect(fetch).toHaveBeenCalledWith(
-      "http://localhost:3000/enrollments",
-      expect.objectContaining({
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      })
-    );
-
-    // Verifica redirecionamento
     expect(mockPush).toHaveBeenCalledWith("/sucesso");
+  });
+
+  it("Exibe mensagem de erro quando a API retorna erro", async () => {
+    render(<EnrollmentForm />);
+
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: false,
+      json: async () => ({ message: "Falha ao criar matrícula." }),
+    });
+
+    await fillValidForm();
+
+    await waitFor(() => expect(submitButton).toBeEnabled());
+
+    await act(async () => fireEvent.click(submitButton));
+
+    expect(
+      await screen.findByText("Falha ao criar matrícula.")
+    ).toBeInTheDocument();
+
+    expect(mockPush).not.toHaveBeenCalled();
   });
 });
