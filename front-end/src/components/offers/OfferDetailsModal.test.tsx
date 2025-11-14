@@ -51,4 +51,18 @@ describe('OfferDetailsModal', () => {
     const avançarButton = screen.getByRole('button', { name: 'Avançar' });
     expect(avançarButton).toBeDisabled();
   });
+
+  it('Verifica se mostra a tabela de preços (Digital) e o botão "Avançar" desabilitado', () => {
+    render(<OfferDetailsModal offer={MOCK_OFFER_DIGITAL} onClose={mockOnClose} />);
+    
+    // Verifica se o hero digital está lá
+    expect(screen.getByText(/Inscreva-se para saber/)).toBeInTheDocument();
+    
+    // Verifica se a tabela NÃO está lá
+    expect(screen.queryByText('Qual dessas opções de parcelas você prefere?')).not.toBeInTheDocument();
+
+    // O botão deve estar habilitado
+    const avançarButton = screen.getByRole('button', { name: 'Avançar' });
+    expect(avançarButton).toBeEnabled();
+  });
 });
