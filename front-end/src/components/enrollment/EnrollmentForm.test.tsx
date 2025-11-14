@@ -294,4 +294,105 @@ describe("Verifica comportamento individual de cada campo do formulário", () =>
       screen.getByText("CPF inválido (deve ter 11 dígitos)")
     ).toBeInTheDocument();
   });
+
+  it("DATA NASCIMENTO -> Verifica se botão Avançar permanece desabilitado com data de nascimento futura", async () => {
+    render(<EnrollmentForm />);
+
+    await fillValidForm();
+
+    const birthDateInput = screen.getByTestId("birthDate");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    const nextYear = new Date().getFullYear() + 1;
+
+    // Coloca um valor inválido
+    await act(async () => {
+      fireEvent.change(birthDateInput, {
+        target: { value: `${nextYear}-01-01` }, // sem o ano
+      });
+    });
+
+    expect(submitButton).toBeDisabled();
+    expect(
+      screen.getByText("A data de nascimento não pode ser futura")
+    ).toBeInTheDocument();
+  });
+
+  it("EMAIL -> Verifica se botão Avançar permanece desabilitado com email inválido", async () => {
+    render(<EnrollmentForm />);
+
+    await fillValidForm();
+
+    const emailInput = screen.getByTestId("email");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    // Coloca um valor inválido
+    await act(async () => {
+      fireEvent.change(emailInput, { target: { value: "email_invalido" } }); // formato inválido, sem @ e .com
+    });
+
+    expect(submitButton).toBeDisabled();
+    expect(screen.getByText("Formato de e-mail inválido")).toBeInTheDocument();
+  });
+
+  it("CELULAR -> Verifica se botão Avançar permanece desabilitado com celular inválido (10 dígitos)", async () => {
+    render(<EnrollmentForm />);
+
+    await fillValidForm();
+
+    const phoneInput = screen.getByTestId("phone");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    // Coloca um valor inválido
+    await act(async () => {
+      fireEvent.change(phoneInput, {
+        target: { value: "(11) 9999-9999" }, // 10 dígitos
+      });
+    });
+
+    expect(submitButton).toBeDisabled();
+    expect(
+      screen.getByText("Celular inválido (deve ter 11 dígitos)")
+    ).toBeInTheDocument();
+  });
+
+  it("ANO CONCLUSÃO -> Verifica se botão Avançar permanece desabilitado com ano futuro", async () => {
+    render(<EnrollmentForm />);
+
+    await fillValidForm();
+
+    const highSchoolYearInput = screen.getByTestId("highSchoolYear");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    const nextYear = new Date().getFullYear() + 1;
+
+    // Coloca um valor inválido
+    await act(async () => {
+      fireEvent.change(highSchoolYearInput, {
+        target: { value: String(nextYear) }, //Ano futuro
+      });
+    });
+
+    expect(submitButton).toBeDisabled();
+    expect(
+      screen.getByText("O ano de conclusão não pode ser futuro")
+    ).toBeInTheDocument();
+  });
+
+  it("TERMOS -> Verifica se botão Avançar permanece desabilitado se os termos não forem aceitos", async () => {
+    render(<EnrollmentForm />);
+
+    await fillValidForm();
+
+    const termsCheckbox = screen.getByTestId("termsAccepted");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    // Desmarca o checkbox
+    await act(async () => {
+      fireEvent.click(termsCheckbox);
+    });
+
+    expect(submitButton).toBeDisabled();
+    expect(screen.getByText("Você deve aceitar os termos")).toBeInTheDocument();
+  });
 });
