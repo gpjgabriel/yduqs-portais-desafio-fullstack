@@ -126,4 +126,43 @@ describe("Enrollments (e2e)", () => {
         );
       });
   });
+
+  it("POST /enrollments -> deve falhar se o cpf for inválido", () => {
+    const invalidStudent = createValidStudentDto();
+    invalidStudent.cpf = "123"; //simula cpf inválido
+
+    const newEnrollmentDto: CreateEnrollmentDto = {
+      courseOfferId: offer1_Id,
+      paymentPlanId: offer1_PlanId,
+      student: invalidStudent,
+    };
+
+    return request(app.getHttpServer())
+      .post("/enrollments")
+      .send(newEnrollmentDto)
+      .expect(400) // Deve falhar com 400
+      .expect((res) => {
+        expect(res.body.message).toContain(
+          "student.O CPF deve conter 11 dígitos."
+        );
+      });
+  });
+
+  it("POST /enrollments -> deve falhar se o plano não pertencer a oferta", () => {
+    const newEnrollmentDto: CreateEnrollmentDto = {
+      courseOfferId: offer1_Id, // ID da Oferta 1
+      paymentPlanId: invalidPlanForOffer1, // Plano da Oferta 2
+      student: createValidStudentDto(),
+    };
+
+    return request(app.getHttpServer())
+      .post("/enrollments")
+      .send(newEnrollmentDto)
+      .expect(404) // Deve falhar com 404
+      .expect((res) => {
+        expect(res.body.message).toBe(
+          "Plano de pagamento ou oferta de curso inválida."
+        );
+      });
+  });
 });
