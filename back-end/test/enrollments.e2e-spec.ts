@@ -23,8 +23,6 @@ describe("Enrollments (e2e)", () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
-  let validCourseOfferId: number;
-  let validPaymentPlanId: number;
   let invalidPlanForOffer1: number;
 
   let offer1_Id: number;
@@ -162,6 +160,38 @@ describe("Enrollments (e2e)", () => {
       .expect((res) => {
         expect(res.body.message).toBe(
           "Plano de pagamento ou oferta de curso inválida."
+        );
+      });
+  });
+
+  it("POST /enrollments -> deve falhar se o E-mail do aluno já existir", async () => {
+    const studentData1 = createValidStudentDto();
+    const firstEnrollmentDto: CreateEnrollmentDto = {
+      courseOfferId: offer1_Id,
+      paymentPlanId: offer1_PlanId,
+      student: studentData1,
+    };
+    await request(app.getHttpServer())
+      .post("/enrollments")
+      .send(firstEnrollmentDto)
+      .expect(201);
+
+    const studentData2 = createValidStudentDto();
+    studentData2.email = studentData1.email; // Email duplicado
+
+    const secondEnrollmentDto: CreateEnrollmentDto = {
+      courseOfferId: offer2_Id,
+      paymentPlanId: offer2_PlanId,
+      student: studentData2,
+    };
+
+    return request(app.getHttpServer())
+      .post("/enrollments")
+      .send(secondEnrollmentDto)
+      .expect(409) // Deve falhar com 409
+      .expect((res) => {
+        expect(res.body.message).toBe(
+          "Um aluno com este CPF ou E-mail já existe."
         );
       });
   });
