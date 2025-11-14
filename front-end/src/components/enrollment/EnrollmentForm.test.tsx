@@ -146,7 +146,7 @@ async function fillValidForm(custom = {}) {
   });
 }
 
-describe("EnrollmentForm", () => {
+describe("Verifica comportamento geral do EnrollmentForm", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -248,5 +248,31 @@ describe("EnrollmentForm", () => {
     ).toBeInTheDocument();
 
     expect(mockPush).not.toHaveBeenCalled();
+  });
+});
+
+describe("Verifica comportamento individual de cada campo do formulário", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("NOME -> Verifica se botão Avançar permanece desabilitado com nome inválido (sem sobrenome)", async () => {
+    render(<EnrollmentForm />);
+
+    await fillValidForm();
+
+    const nameInput = screen.getByTestId("name");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    // Coloca um valor inválido
+    await act(async () => {
+      fireEvent.change(nameInput, { target: { value: "Gabriel" } }); // sem sobrenome
+    });
+
+    expect(submitButton).toBeDisabled(); // Botão permanece desabilitado
+
+    expect(
+      screen.getByText("O nome deve ser completo (nome e sobrenome)")
+    ).toBeInTheDocument();
   });
 });
