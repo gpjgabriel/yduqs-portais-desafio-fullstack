@@ -80,5 +80,21 @@ describe('OfferDetailsModal', () => {
     expect(avançarButton).toBeEnabled();
   });
 
+  it('Verifica se o accordion abre e fecha ao clicar', () => {
+    render(<OfferDetailsModal offer={MOCK_OFFER_PRESENCIAL} onClose={mockOnClose} />);
+    
+    const accordionHeader = screen.getByText('Sobre a Bolsa Incentivo');
+    
+    // Verifica se o conteúdo do accordion não está na tela
+    expect(screen.queryByText('Aqui vai o conteúdo...')).not.toBeInTheDocument();
 
+    // Clica para abrir
+    fireEvent.click(accordionHeader);
+    // Verifica se o conteúdo aparece
+    expect(screen.getByText('Aqui vai o conteúdo...')).toBeInTheDocument();
+    
+    // Clica para fechar
+    fireEvent.click(accordionHeader);
+    expect(screen.queryByText('Aqui vai o conteúdo...')).not.toBeInTheDocument();
+  });
 });
