@@ -190,4 +190,58 @@ describe("EnrollmentForm", () => {
       expect(submitButton).toBeEnabled();
     });
   });
+
+  it("Redireciona para página de sucesso após envio válido do formulário", async () => {
+    render(<EnrollmentForm />);
+
+    const nameInput = screen.getByTestId("name");
+    const cpfInput = screen.getByTestId("cpf");
+    const birthDateInput = screen.getByTestId("birthDate");
+    const emailInput = screen.getByTestId("email");
+    const phoneInput = screen.getByTestId("phone");
+    const highSchoolYearInput = screen.getByTestId("highSchoolYear");
+    const termsCheckbox = screen.getByTestId("termsAccepted");
+
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    // Mock do fetch retornando sucesso
+    (fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({}),
+    });
+
+    // Preenchendo dados válidos
+    await act(async () => {
+      fireEvent.change(nameInput, { target: { value: "Maria da Silva" } });
+      fireEvent.change(cpfInput, { target: { value: "123.456.789-09" } });
+      fireEvent.change(birthDateInput, { target: { value: "1990-12-01" } });
+      fireEvent.change(emailInput, { target: { value: "maria@email.com" } });
+      fireEvent.change(phoneInput, { target: { value: "(11) 99999-9999" } });
+      fireEvent.change(highSchoolYearInput, { target: { value: "2010" } });
+      fireEvent.click(termsCheckbox);
+    });
+
+    // Aguarda validação e botão ficar habilitado
+    await waitFor(() => {
+      expect(submitButton).toBeEnabled();
+    });
+
+    // Envia formulário
+    await act(async () => {
+      fireEvent.click(submitButton);
+    });
+
+    // Verifica chamada ao fetc
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:3000/enrollments",
+      expect.objectContaining({
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+
+    // Verifica redirecionamento
+    expect(mockPush).toHaveBeenCalledWith("/sucesso");
+  });
 });
