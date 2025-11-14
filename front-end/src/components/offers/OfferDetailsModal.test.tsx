@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { OfferDetailsModal } from './OfferDetailsModal';
 import { type CourseOffer } from './CourseOfferCard';
 
@@ -52,6 +52,20 @@ describe('OfferDetailsModal', () => {
     expect(avançarButton).toBeDisabled();
   });
 
+  it('Verifica seo botão "Avançar" é habilitado após selecionar um plano', () => {
+    render(<OfferDetailsModal offer={MOCK_OFFER_PRESENCIAL} onClose={mockOnClose} />);
+    
+    const avançarButton = screen.getByRole('button', { name: 'Avançar' });
+    expect(avançarButton).toBeDisabled(); // Verifica se está desabilitado
+
+    // Seleciona um plano
+    const radioLabel = screen.getByText('18x R$ 169,95');
+    fireEvent.click(radioLabel);
+
+    // Verifica se o botão foi habilitado
+    expect(avançarButton).toBeEnabled();
+  });
+
   it('Verifica se mostra a tabela de preços (Digital) e o botão "Avançar" desabilitado', () => {
     render(<OfferDetailsModal offer={MOCK_OFFER_DIGITAL} onClose={mockOnClose} />);
     
@@ -65,4 +79,6 @@ describe('OfferDetailsModal', () => {
     const avançarButton = screen.getByRole('button', { name: 'Avançar' });
     expect(avançarButton).toBeEnabled();
   });
+
+
 });
