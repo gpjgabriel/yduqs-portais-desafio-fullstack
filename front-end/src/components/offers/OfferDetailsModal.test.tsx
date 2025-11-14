@@ -6,6 +6,13 @@ import { type CourseOffer } from './CourseOfferCard';
 
 const mockOnClose = jest.fn();
 
+const mockRouterPush = jest.fn();
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    push: mockRouterPush,
+  }),
+}));
+
 // >>>>>>>>>>>> MOCKS DOS DADOS <<<<<<<<<<<<<<<<<<
 
 const MOCK_OFFER_PRESENCIAL: CourseOffer = {
@@ -36,6 +43,7 @@ const MOCK_OFFER_DIGITAL: CourseOffer = {
 describe('OfferDetailsModal', () => {
   beforeEach(() => {
     mockOnClose.mockClear();
+    mockRouterPush.mockClear();
     document.body.classList.remove('modal-open');
   });
 
@@ -96,5 +104,21 @@ describe('OfferDetailsModal', () => {
     // Clica para fechar
     fireEvent.click(accordionHeader);
     expect(screen.queryByText('Aqui vai o conteúdo...')).not.toBeInTheDocument();
+  });
+
+  it('Verifica se, ao clicar em "Avançar", chama o router.push com os query params corretos', () => {
+    render(<OfferDetailsModal offer={MOCK_OFFER_PRESENCIAL} onClose={mockOnClose} />);
+
+    // Seleciona o plano 
+    const radioLabel = screen.getByText('1x R$ 2.613,60');
+    fireEvent.click(radioLabel);
+    
+    // Clica em Avançar
+    const avançarButton = screen.getByRole('button', { name: 'Avançar' });
+    fireEvent.click(avançarButton);
+    
+    // Verifica se o router.push foi chamado corretamente
+    expect(mockRouterPush).toHaveBeenCalledTimes(1);
+    expect(mockRouterPush).toHaveBeenCalledWith('/inscricao?offerId=1&planId=2');
   });
 });
