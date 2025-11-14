@@ -6,6 +6,7 @@ import {
   act,
 } from "@testing-library/react";
 import { EnrollmentForm } from "./EnrollmentForm";
+import { Controller } from "react-hook-form";
 
 const mockPush = jest.fn();
 const mockSearchParams = new URLSearchParams({
@@ -20,50 +21,93 @@ jest.mock("next/navigation", () => ({
 
 global.fetch = jest.fn();
 
+// MOCK dos inputs
 jest.mock("@/components/common/FormInputs", () => ({
-  MuiTextInput: (props: any) => {
-    const { label, name, error } = props;
-    return (
-      <div>
-        <label>{label}</label>
-        <input data-testid={name} aria-label={label} />
-        {error && <span>{error.message}</span>}
-      </div>
-    );
-  },
+  MuiTextInput: ({ name, label, control, error }: any) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <div>
+          <label>{label}</label>
+          <input
+            data-testid={name}
+            aria-label={label}
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(e.target.value)}
+          />
+          {error && <span>{error.message}</span>}
+        </div>
+      )}
+    />
+  ),
 
-  MuiMaskedInput: (props: any) => {
-    const { label, name, error } = props;
-    return (
-      <div>
-        <label>{label}</label>
-        <input data-testid={name} aria-label={label} />
-        {error && <span>{error.message}</span>}
-      </div>
-    );
-  },
+  MuiMaskedInput: ({ name, label, control, error }: any) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <div>
+          <label>{label}</label>
+          <input
+            data-testid={name}
+            aria-label={label}
+            value={field.value ?? ""}
+            onChange={(e) => field.onChange(e.target.value)}
+          />
+          {error && <span>{error.message}</span>}
+        </div>
+      )}
+    />
+  ),
 
-  MuiDateInput: (props: any) => {
-    const { label, name, error } = props;
-    return (
-      <div>
-        <label>{label}</label>
-        <input type="date" data-testid={name} aria-label={label} />
-        {error && <span>{error.message}</span>}
-      </div>
-    );
-  },
+  MuiDateInput: ({ name, label, control, error }: any) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <div>
+          <label>{label}</label>
+          <input
+            type="date"
+            data-testid={name}
+            aria-label={label}
+            value={
+              field.value
+                ? new Date(field.value).toISOString().split("T")[0]
+                : ""
+            }
+            onChange={(e) => {
+              const dateStr = e.target.value;
+              const date = dateStr ? new Date(dateStr) : null;
+              field.onChange(date);
+            }}
+          />
+          {error && <span>{error.message}</span>}
+        </div>
+      )}
+    />
+  ),
 
-  MuiCheckbox: (props: any) => {
-    const { label, name, error } = props;
-    return (
-      <div>
-        <label>{label}</label>
-        <input type="checkbox" data-testid={name} aria-label={label} />
-        {error && <span>{error.message}</span>}
-      </div>
-    );
-  },
+  MuiCheckbox: ({ name, label, control, error }: any) => (
+    <Controller
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <div>
+          <label>{label}</label>
+          <input
+            type="checkbox"
+            data-testid={name}
+            aria-label={label}
+            checked={field.value ?? false}
+            onChange={(e) => field.onChange(e.target.checked)}
+          />
+          {error && <span>{error.message}</span>}
+        </div>
+      )}
+    />
+  ),
 }));
 
 describe("EnrollmentForm", () => {
@@ -71,8 +115,7 @@ describe("EnrollmentForm", () => {
     jest.clearAllMocks();
   });
 
-  // Verifica se o formulário foi renderizado
-  it("Verifica se todos os campos do formulário foram renderizados", () => {
+  it("Renderiza todos os campos corretamente", () => {
     render(<EnrollmentForm />);
 
     expect(screen.getByLabelText("Nome completo")).toBeInTheDocument();
@@ -91,24 +134,18 @@ describe("EnrollmentForm", () => {
     ).toBeInTheDocument();
   });
 
-  it("Verifica se o formulário é renderizado com o botão 'Avançar' desabilitado e retorna um erro ao tentar enviar sem preencher os campos", async () => {
+  it("Botão começa desabilitado e exibe erros ao tentar enviar vazio", async () => {
     render(<EnrollmentForm />);
 
-    //Verifica se o formulário foi renderizado
     const form = screen.getByTestId("enrollment-form");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
 
-    const getSubmitButton = () =>
-      screen.getByRole("button", { name: "Avançar" });
+    expect(submitButton).toBeDisabled();
 
-    //Verifica se o botão está desabilitado
-    expect(getSubmitButton()).toBeDisabled();
-
-    //Simula uma tentativa de envio do formulário sem estar preenchido
     await act(async () => {
       fireEvent.submit(form);
     });
 
-    //Verifica se as mensagens de erro aparecem
     expect(await screen.findByText("O nome é obrigatório")).toBeInTheDocument();
     expect(await screen.findByText("O CPF é obrigatório")).toBeInTheDocument();
     expect(
@@ -120,5 +157,37 @@ describe("EnrollmentForm", () => {
     expect(
       await screen.findByText("O celular é obrigatório")
     ).toBeInTheDocument();
+  });
+
+  it("Habilita o botão 'Avançar' após preencher todos os campos corretamente", async () => {
+    render(<EnrollmentForm />);
+
+    const nameInput = screen.getByTestId("name");
+    const cpfInput = screen.getByTestId("cpf");
+    const birthDateInput = screen.getByTestId("birthDate");
+    const emailInput = screen.getByTestId("email");
+    const phoneInput = screen.getByTestId("phone");
+    const highSchoolYearInput = screen.getByTestId("highSchoolYear");
+    const termsCheckbox = screen.getByTestId("termsAccepted");
+
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    expect(submitButton).toBeDisabled();
+
+    await act(async () => {
+      fireEvent.change(nameInput, { target: { value: "Gabriel Paiva" } });
+      fireEvent.change(cpfInput, { target: { value: "123.456.789-09" } });
+      fireEvent.change(birthDateInput, { target: { value: "1989-11-27" } });
+      fireEvent.change(emailInput, {
+        target: { value: "gpj_gabriel@hotmail.com" },
+      });
+      fireEvent.change(phoneInput, { target: { value: "(62) 98583-5123" } });
+      fireEvent.change(highSchoolYearInput, { target: { value: "2012" } });
+      fireEvent.click(termsCheckbox);
+    });
+
+    await waitFor(() => {
+      expect(submitButton).toBeEnabled();
+    });
   });
 });
