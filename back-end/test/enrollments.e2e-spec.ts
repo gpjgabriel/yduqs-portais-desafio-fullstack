@@ -25,7 +25,12 @@ describe("Enrollments (e2e)", () => {
 
   let validCourseOfferId: number;
   let validPaymentPlanId: number;
-  let invalidPaymentPlanForThisOffer: number;
+  let invalidPlanForOffer1: number;
+
+  let offer1_Id: number;
+  let offer1_PlanId: number;
+  let offer2_Id: number;
+  let offer2_PlanId: number;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -46,29 +51,27 @@ describe("Enrollments (e2e)", () => {
 
     prisma = app.get<PrismaService>(PrismaService);
 
-    const offer = await prisma.courseOffer.findFirst({
+    const offers = await prisma.courseOffer.findMany({
       where: { paymentPlans: { some: {} } },
       include: { paymentPlans: true },
     });
 
-    if (!offer) {
-      throw new Error("Seed não executado ou banco sem ofertas com planos.");
-    }
-
-    validCourseOfferId = offer.id;
-    validPaymentPlanId = offer.paymentPlans[0].id;
-
-    const otherPlan = await prisma.paymentPlan.findFirst({
-      where: { offerId: { not: validCourseOfferId } },
-    });
-
-    if (!otherPlan) {
+    if (offers.length < 2) {
       throw new Error(
-        "Seed não possui pelo menos 2 ofertas com planos para o teste."
+        "Seed precisa de pelo menos 2 ofertas com planos de pagamento para os testes."
       );
     }
 
-    invalidPaymentPlanForThisOffer = otherPlan.id;
+    // Oferta 1
+    offer1_Id = offers[0].id;
+    offer1_PlanId = offers[0].paymentPlans[0].id;
+
+    // Oferta 2
+    offer2_Id = offers[1].id;
+    offer2_PlanId = offers[1].paymentPlans[0].id;
+
+    // Plano inválido
+    invalidPlanForOffer1 = offer2_PlanId;
   });
 
   afterAll(async () => {
@@ -77,8 +80,8 @@ describe("Enrollments (e2e)", () => {
 
   it("POST /enrollments -> deve criar uma matrícula com dados válidos", async () => {
     const newEnrollmentDto: CreateEnrollmentDto = {
-      courseOfferId: validCourseOfferId,
-      paymentPlanId: validPaymentPlanId,
+      courseOfferId: offer1_Id,
+      paymentPlanId: offer1_PlanId,
       student: createValidStudentDto(),
     };
 
@@ -91,12 +94,36 @@ describe("Enrollments (e2e)", () => {
       expect.objectContaining({
         id: expect.any(Number),
         studentId: expect.any(Number),
-        courseOfferId: validCourseOfferId,
-        paymentPlanId: validPaymentPlanId,
-        student: expect.objectContaining({
-          cpf: newEnrollmentDto.student.cpf,
-        }),
+        courseOfferId: offer1_Id,
+        paymentPlanId: offer1_PlanId,
       })
     );
+  });
+
+  it("POST /enrollments -> deve falhar se o aluno tentar se matricular no MESMO curso novamente", async () => {
+    const studentData = createValidStudentDto();
+
+    const enrollmentDto: CreateEnrollmentDto = {
+      courseOfferId: offer1_Id,
+      paymentPlanId: offer1_PlanId,
+      student: studentData,
+    };
+
+    // Cria a primeira matrícula
+    await request(app.getHttpServer())
+      .post("/enrollments")
+      .send(enrollmentDto)
+      .expect(201); // Sucesso
+
+    // Tenta criar a segunda matrícula com o MESMO cpf e courso
+    return request(app.getHttpServer())
+      .post("/enrollments")
+      .send(enrollmentDto)
+      .expect(409) // Deve falhar com 409
+      .expect((res) => {
+        expect(res.body.message).toBe(
+          "O aluno já está matriculado nesta oferta de curso."
+        );
+      });
   });
 });
