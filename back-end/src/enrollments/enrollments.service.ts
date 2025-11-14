@@ -31,15 +31,30 @@ export class EnrollmentsService {
           );
         }
 
+        // Cria/Atualiza o aluno
         const studentRecord = await tx.student.upsert({
-          //Cria/Atualiza o aluno conforme CPF existente ou não
           where: { cpf: student.cpf },
           update: { ...student },
           create: { ...student },
         });
 
+        // Verifica se já existe uma matrícula para este aluno NESTA oferta
+        const existingEnrollment = await tx.enrollment.findFirst({
+          where: {
+            studentId: studentRecord.id,
+            courseOfferId: courseOfferId,
+          },
+        });
+
+        // Se existir, lança um erro de conflito
+        if (existingEnrollment) {
+          throw new ConflictException(
+            "O aluno já está matriculado nesta oferta de curso."
+          );
+        }
+
+        // Cria a nova matrícula
         const newEnrollment = await tx.enrollment.create({
-          //Vincula o aluno ao plano
           data: {
             studentId: studentRecord.id,
             courseOfferId: courseOfferId,
@@ -55,16 +70,19 @@ export class EnrollmentsService {
       });
     } catch (error) {
       if (
-        error instanceof Prisma.PrismaClientKnownRequestError && // Se falhar por outra constraint única (ex: email)
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2002"
       ) {
         throw new ConflictException(
           "Um aluno com este CPF ou E-mail já existe."
         );
-      }
-      if (error instanceof NotFoundException) {
-        // Outros erros
-        throw error;
       }
       throw new Error(`Falha ao criar matrícula: ${error.message}`);
     }
