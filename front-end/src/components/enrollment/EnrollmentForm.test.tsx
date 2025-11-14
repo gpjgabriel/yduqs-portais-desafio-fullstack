@@ -275,4 +275,23 @@ describe("Verifica comportamento individual de cada campo do formulário", () =>
       screen.getByText("O nome deve ser completo (nome e sobrenome)")
     ).toBeInTheDocument();
   });
+
+  it("CPF -> Verifica se botão Avançar permanece desabilitado com CPF inválido (10 dígitos)", async () => {
+    render(<EnrollmentForm />);
+
+    await fillValidForm();
+
+    const cpfInput = screen.getByTestId("cpf");
+    const submitButton = screen.getByRole("button", { name: "Avançar" });
+
+    // Coloca um valor inválido
+    await act(async () => {
+      fireEvent.change(cpfInput, { target: { value: "123.456.789-0" } }); // 10 dígitos
+    });
+
+    expect(submitButton).toBeDisabled();
+    expect(
+      screen.getByText("CPF inválido (deve ter 11 dígitos)")
+    ).toBeInTheDocument();
+  });
 });
